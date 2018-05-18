@@ -1,1 +1,3 @@
 *.pyc
+*.sqlite3
+gdpr/privacy/app/migrations/
