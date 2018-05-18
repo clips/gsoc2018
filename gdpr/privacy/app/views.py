@@ -130,9 +130,10 @@ def preprocess(text):
         "you're": "you are",
         "you've": "you have"
     }
-    text = text.lower()
+    #Switched off text lower case because it gives better performance on entity recognition
+    #text = text.lower()
     for contraction in contractions:
-        text = re.sub(contraction, contractions[contraction], text)
+        text = re.sub(contraction, contractions[contraction], text, flags=re.I)
     ''' Splitting text into sentences and words '''
     sentences = text.split('.')
     tokenized_sentences = [word_tokenize(sentence) for sentence in sentences]
