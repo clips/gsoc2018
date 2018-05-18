@@ -1,3 +1,5 @@
 *.pyc
 *.sqlite3
 gdpr/privacy/app/migrations/
+*english.muc.7class.distsim.crf.ser.gz
+*stanford-ner.jar
