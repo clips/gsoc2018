@@ -3,6 +3,10 @@ from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
 from django.http import HttpResponse
 import re
+import spacy
+import os
+import sys
+from pathlib import Path
 
 
 def preprocess(text):
@@ -126,11 +130,33 @@ def preprocess(text):
         "you're": "you are",
         "you've": "you have"
     }
-    text = 'I ain\'t don\'t do this to me. I ain\'t don\'t do this to me. I ain\'t don\'t do this to me.'
     text = text.lower()
     for contraction in contractions:
         text = re.sub(contraction, contractions[contraction], text)
     ''' Splitting text into sentences and words '''
     sentences = text.split('.')
     tokenized_sentences = [word_tokenize(sentence) for sentence in sentences]
+    tokenized_sentences = [
+        sentence for sentence in tokenized_sentences if len(sentence) > 0]
     return tokenized_sentences
+
+
+def entity_recognition_stanford(tokens, base_path):
+    classifier_model_path = base_path + '/english.muc.7class.distsim.crf.ser.gz'
+    ner_jar_path = base_path + '/stanford-ner.jar'
+    stanford_tagger = StanfordNERTagger(
+        classifier_model_path, ner_jar_path, encoding='utf-8')
+    ner_tagged = stanford_tagger.tag(tokens)
+    replaced_text_list = [word[0] if word[1] == "O" else str(
+        '|'+word[1]+'|') for word in ner_tagged]
+    return ' '.join(replaced_text_list)
+
+
+if __name__ == "__main__":
+    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    base_path = str(Path(base_path).parents[0])
+    text = "My name is John Oliver, I stay in Dubai and fell sick and was admitted to Hopkins hospital."
+    preprocessed_text = preprocess(text)
+    print(preprocessed_text)
+    for sentence in preprocessed_text:
+        print(entity_recognition_stanford(sentence, base_path))
