@@ -130,7 +130,7 @@ def preprocess(text):
         "you're": "you are",
         "you've": "you have"
     }
-    #Switched off text lower case because it gives better performance on entity recognition
+    # Switched off text lower case because it gives better performance on entity recognition
     #text = text.lower()
     for contraction in contractions:
         text = re.sub(contraction, contractions[contraction], text, flags=re.I)
@@ -143,6 +143,7 @@ def preprocess(text):
 
 
 def entity_recognition_stanford(tokens, base_path):
+    ''' Uses the Stanford NER model wrapped in NLTK'''
     classifier_model_path = base_path + '/english.muc.7class.distsim.crf.ser.gz'
     ner_jar_path = base_path + '/stanford-ner.jar'
     stanford_tagger = StanfordNERTagger(
@@ -153,11 +154,41 @@ def entity_recognition_stanford(tokens, base_path):
     return ' '.join(replaced_text_list)
 
 
+def entity_recognition_spacy(text):
+    ''' Uses the SPACY NER model. Currently written using the en_core_web_sm model '''
+    spacy_model = spacy.load('en_core_web_sm')
+    document = spacy_model(text)
+    old_text = text
+    anonymized_text = ''
+    entities_in_document = document.ents
+    number_of_entities = len(entities_in_document)
+    ''' Function to slice and replace substrings with entity labels '''
+    for index, ent in enumerate(entities_in_document):
+        if index is 0:
+            anonymized_text += old_text[:ent.start_char] + ent.label_ + \
+                old_text[ent.end_char:entities_in_document[index+1].start_char]
+        elif index is number_of_entities-1:
+            anonymized_text += ent.label_ + old_text[ent.end_char:]
+        else:
+            anonymized_text += ent.label_ + \
+                old_text[ent.end_char:entities_in_document[index+1].start_char]
+    return anonymized_text
+
+
 if __name__ == "__main__":
     base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     base_path = str(Path(base_path).parents[0])
-    text = "My name is John Oliver, I stay in Dubai and fell sick and was admitted to Hopkins hospital."
+    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
+    " I was then hired by Google."
+    '''
+    #Stanford experiment
     preprocessed_text = preprocess(text)
     print(preprocessed_text)
     for sentence in preprocessed_text:
         print(entity_recognition_stanford(sentence, base_path))
+    '''
+    # Spacy Experiment
+    preprocessed_text = preprocess(text)
+    sentences = [' '.join(word) for word in preprocessed_text]
+    text = '. '.join(sentences)
+    print(entity_recognition_spacy(text))
