@@ -28,7 +28,10 @@ class Supression_Configuration(models.Model):
     suppress_number = models.IntegerField(null=True, blank=True, default=None)
     # The field below specifies the percentage of characters to suppress
     suppress_percent = models.FloatField(null=True, blank=True, default=None)
-    # Will check if atleast one of the two is provided, if no, will throw an error
+    # Will check if atleast one of the two (percent or number) is provided
+    # if no, will throw an error
+    # the field below allows to set the replacement character
+    replacement_character = models.CharField(max_length=1, default='*')
 
     def clean(self, *args, **kwargs):
         if not self.suppress_number and not self.suppress_percent:
