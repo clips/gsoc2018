@@ -165,27 +165,59 @@ def entity_recognition_spacy(text):
     number_of_entities = len(entities_in_document)
     ''' Function to slice and replace substrings with entity labels '''
     for index, ent in enumerate(entities_in_document):
-        text = ent.text
-        print text
-        new_label = give_new_label(label, text)
+        new_label = give_new_label(ent.label_, ent.text)
         if index is 0:
-            anonymized_text += old_text[:ent.start_char] + ent.label_ + \
+            anonymized_text += old_text[:ent.start_char] + new_label + \
                 old_text[ent.end_char:entities_in_document[index+1].start_char]
         elif index is number_of_entities-1:
-            anonymized_text += ent.label_ + old_text[ent.end_char:]
+            anonymized_text += new_label + old_text[ent.end_char:]
         else:
-            anonymized_text += ent.label_ + \
+            anonymized_text += new_label + \
                 old_text[ent.end_char:entities_in_document[index+1].start_char]
     return anonymized_text
 
 
 def give_new_label(label, text):
     ''' When given the entity label and the actual entity text, returns the replacement entity '''
-
-    pass
+    try:
+        # Checking for the alias in the DB
+        alias = Attribute_Alias.objects.get(alias=label)
+    except Attribute_Alias.DoesNotExist:
+        # return and terminate function if it does not exist
+        return label
+    attribute_configuration = alias.attribute
+    print(attribute_configuration.attribute_action)
+    if attribute_configuration.attribute_action == 'del':
+        deletion_configuration = Deletion_Configuration.objects.get(
+            attribute=attribute_configuration)
+        new_label = deletion_configuration.replacement_name
+        return new_label
+    elif attribute_configuration.attribute_action == 'gen':
+        pass
+    else:
+        pass
 
 
 if __name__ == "__main__":
+    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    base_path = str(Path(base_path).parents[0])
+    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
+        " I was then hired by Google."
+    '''
+    #Stanford experiment
+    preprocessed_text = preprocess(text)
+    print(preprocessed_text)
+    for sentence in preprocessed_text:
+        print(entity_recognition_stanford(sentence, base_path))
+    '''
+    # Spacy Experiment
+    preprocessed_text = preprocess(text)
+    sentences = [' '.join(word) for word in preprocessed_text]
+    text = '. '.join(sentences)
+    print(entity_recognition_spacy(text))
+
+
+def main():
     base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     base_path = str(Path(base_path).parents[0])
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
