@@ -8,7 +8,7 @@ from django.db import models
 class Attribute_Configuration(models.Model):
     # Contains the primary name of the attribute.
     # Will create a one to many mapping for aliases and action details
-    attribute_name = models.CharField(max_length=150)
+    attribute_title = models.CharField(max_length=150)
     ATTRIBUTE_ACTION_CHOICES = (
         ('supp', 'supression'),
         ('gen', 'generalization'),
@@ -24,8 +24,13 @@ class Supression_Configuration(models.Model):
     suppress_number = models.IntegerField()
     # The field below specifies the percentage of characters to suppress
     suppress_percent = models.FloatField()
-
+    # Will check if atleast one of the two is provided, if no, will throw an error
     def clean(self, *args, **kwargs):
         if not self.suppress_number and not self.suppress_percent:
             raise Exception(
                 'You need to mention either supress number of bits or percentage')
+
+
+class Deletion_Configuration(models.Model):
+    attribute = models.OneToOneField(Attribute_Configuration, primary_key=True)
+    replacement_name = models.TextField()
