@@ -7,6 +7,7 @@ import spacy
 import os
 import sys
 from pathlib import Path
+from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
 
 
 def preprocess(text):
@@ -164,22 +165,39 @@ def entity_recognition_spacy(text):
     number_of_entities = len(entities_in_document)
     ''' Function to slice and replace substrings with entity labels '''
     for index, ent in enumerate(entities_in_document):
-        if index is 0:
-            anonymized_text += old_text[:ent.start_char] + ent.label_ + \
-                old_text[ent.end_char:entities_in_document[index+1].start_char]
-        elif index is number_of_entities-1:
-            anonymized_text += ent.label_ + old_text[ent.end_char:]
+        attribute_alias = Attribute_Alias.objects.filter(alias=ent.label_)
+        if attribute_alias.count() > 0:
+            attribute_configuration = attribute_alias.attribute
+            # Placeholder for function here to pull new label
+            if index is 0:
+                anonymized_text += old_text[:ent.start_char] + ent.label_ + \
+                    old_text[ent.end_char:entities_in_document[index+1].start_char]
+            elif index is number_of_entities-1:
+                anonymized_text += ent.label_ + old_text[ent.end_char:]
+            else:
+                anonymized_text += ent.label_ + \
+                    old_text[ent.end_char:entities_in_document[index+1].start_char]
         else:
-            anonymized_text += ent.label_ + \
-                old_text[ent.end_char:entities_in_document[index+1].start_char]
+            if index is 0:
+                anonymized_text += old_text[:ent.start_char] + ent.label_ + \
+                    old_text[ent.end_char:entities_in_document[index+1].start_char]
+            elif index is number_of_entities-1:
+                anonymized_text += ent.label_ + old_text[ent.end_char:]
+            else:
+                anonymized_text += ent.label_ + \
+                    old_text[ent.end_char:entities_in_document[index+1].start_char]
     return anonymized_text
+
+
+def give_new_label():
+    pass
 
 
 if __name__ == "__main__":
     base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
     base_path = str(Path(base_path).parents[0])
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
-    " I was then hired by Google."
+        " I was then hired by Google."
     '''
     #Stanford experiment
     preprocessed_text = preprocess(text)

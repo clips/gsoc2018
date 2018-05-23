@@ -18,6 +18,9 @@ class Attribute_Configuration(models.Model):
     attribute_action = models.CharField(
         max_length=5, choices=ATTRIBUTE_ACTION_CHOICES)
 
+    def __str__(self):
+        return self.attribute_title + ' - ' + self.attribute_action
+
 
 class Supression_Configuration(models.Model):
     attribute = models.OneToOneField(Attribute_Configuration, primary_key=True)
