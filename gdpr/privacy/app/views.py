@@ -165,31 +165,23 @@ def entity_recognition_spacy(text):
     number_of_entities = len(entities_in_document)
     ''' Function to slice and replace substrings with entity labels '''
     for index, ent in enumerate(entities_in_document):
-        attribute_alias = Attribute_Alias.objects.filter(alias=ent.label_)
-        if attribute_alias.count() > 0:
-            attribute_configuration = attribute_alias.attribute
-            # Placeholder for function here to pull new label
-            if index is 0:
-                anonymized_text += old_text[:ent.start_char] + ent.label_ + \
-                    old_text[ent.end_char:entities_in_document[index+1].start_char]
-            elif index is number_of_entities-1:
-                anonymized_text += ent.label_ + old_text[ent.end_char:]
-            else:
-                anonymized_text += ent.label_ + \
-                    old_text[ent.end_char:entities_in_document[index+1].start_char]
+        text = ent.text
+        print text
+        new_label = give_new_label(label, text)
+        if index is 0:
+            anonymized_text += old_text[:ent.start_char] + ent.label_ + \
+                old_text[ent.end_char:entities_in_document[index+1].start_char]
+        elif index is number_of_entities-1:
+            anonymized_text += ent.label_ + old_text[ent.end_char:]
         else:
-            if index is 0:
-                anonymized_text += old_text[:ent.start_char] + ent.label_ + \
-                    old_text[ent.end_char:entities_in_document[index+1].start_char]
-            elif index is number_of_entities-1:
-                anonymized_text += ent.label_ + old_text[ent.end_char:]
-            else:
-                anonymized_text += ent.label_ + \
-                    old_text[ent.end_char:entities_in_document[index+1].start_char]
+            anonymized_text += ent.label_ + \
+                old_text[ent.end_char:entities_in_document[index+1].start_char]
     return anonymized_text
 
 
-def give_new_label():
+def give_new_label(label, text):
+    ''' When given the entity label and the actual entity text, returns the replacement entity '''
+
     pass
 
 
