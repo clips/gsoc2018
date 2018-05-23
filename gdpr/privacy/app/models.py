@@ -25,9 +25,9 @@ class Attribute_Configuration(models.Model):
 class Supression_Configuration(models.Model):
     attribute = models.OneToOneField(Attribute_Configuration, primary_key=True)
     # The field below gives number of characters to suppress. Can also use %
-    suppress_number = models.IntegerField()
+    suppress_number = models.IntegerField(null=True, blank=True, default=None)
     # The field below specifies the percentage of characters to suppress
-    suppress_percent = models.FloatField()
+    suppress_percent = models.FloatField(null=True, blank=True, default=None)
     # Will check if atleast one of the two is provided, if no, will throw an error
 
     def clean(self, *args, **kwargs):
