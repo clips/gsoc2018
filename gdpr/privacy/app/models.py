@@ -7,7 +7,8 @@ from django.db import models
 
 class Attribute_Configuration(models.Model):
     # Contains the primary name of the attribute.
-    # Will create a one to many mapping for aliases and action details
+    # Will create a one to many mapping for aliases
+    # Will create a one to one mapping for action details
     attribute_title = models.CharField(max_length=150)
     ATTRIBUTE_ACTION_CHOICES = (
         ('supp', 'supression'),
@@ -25,6 +26,7 @@ class Supression_Configuration(models.Model):
     # The field below specifies the percentage of characters to suppress
     suppress_percent = models.FloatField()
     # Will check if atleast one of the two is provided, if no, will throw an error
+
     def clean(self, *args, **kwargs):
         if not self.suppress_number and not self.suppress_percent:
             raise Exception(
@@ -32,5 +34,14 @@ class Supression_Configuration(models.Model):
 
 
 class Deletion_Configuration(models.Model):
+    # Linking It to the attribute
     attribute = models.OneToOneField(Attribute_Configuration, primary_key=True)
+    # The title you want to replace it with
     replacement_name = models.TextField()
+
+
+class Attribute_Alias(models.Model):
+    # Linking it to the attribute
+    attribute = models.ForeignKey(Attribute_Configuration)
+    # The alias the attribute/entity name
+    alias = models.TextField()
