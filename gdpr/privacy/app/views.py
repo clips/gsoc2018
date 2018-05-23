@@ -195,12 +195,30 @@ def give_new_label(label, text):
     elif attribute_configuration.attribute_action == 'gen':
         pass
     else:
+        label = give_supressed_attribute(text, attribute_configuration)
+        return label
+
+
+def give_supressed_attribute(text, attribute_configuration):
+    supression_configuration = Supression_Configuration.objects.get(
+        attribute=attribute_configuration)
+    if supression_configuration.suppress_number:
+        number = supression_configuration.suppress_number
+        if number > len(text):
+            # If the length of the bits to supress is greater than text length
+            # then replace the string entirely with asterix's
+            new_text = "*"*len(text)
+        else:
+            # otherwise shave off the last supress_number number of digits
+            new_text = text[:-1*number] + "*"*number
+        return new_text
+    else:
         pass
 
 
 if __name__ == "__main__":
     base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    base_path = str(Path(base_path).parents[0])
+    base_path = str(Path(base_path).parents[0]) 
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
     '''
