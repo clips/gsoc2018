@@ -6,6 +6,7 @@ import re
 import spacy
 import os
 import sys
+import math
 from pathlib import Path
 from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
 
@@ -186,7 +187,6 @@ def give_new_label(label, text):
         # return and terminate function if it does not exist
         return label
     attribute_configuration = alias.attribute
-    print(attribute_configuration.attribute_action)
     if attribute_configuration.attribute_action == 'del':
         deletion_configuration = Deletion_Configuration.objects.get(
             attribute=attribute_configuration)
@@ -202,23 +202,29 @@ def give_new_label(label, text):
 def give_supressed_attribute(text, attribute_configuration):
     supression_configuration = Supression_Configuration.objects.get(
         attribute=attribute_configuration)
+    replacement_character = supression_configuration.replacement_character
     if supression_configuration.suppress_number:
+        # Logic flow in case the number of bits to suppress is provided
         number = supression_configuration.suppress_number
         if number > len(text):
             # If the length of the bits to supress is greater than text length
             # then replace the string entirely with asterix's
-            new_text = "*"*len(text)
+            new_text = replacement_character*len(text)
         else:
             # otherwise shave off the last supress_number number of digits
-            new_text = text[:-1*number] + "*"*number
+            new_text = text[:-1*number] + replacement_character*number
         return new_text
     else:
-        pass
+        # Logic to follow in case the percent of bits to supress is provided
+        percent = supression_configuration.suppress_percent
+        number = int(math.floor(0.01*percent*len(text)))
+        new_text = text[:-1*number] + replacement_character*number
+        return new_text
 
 
 if __name__ == "__main__":
     base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    base_path = str(Path(base_path).parents[0]) 
+    base_path = str(Path(base_path).parents[0])
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
     '''
@@ -251,4 +257,5 @@ def main():
     preprocessed_text = preprocess(text)
     sentences = [' '.join(word) for word in preprocessed_text]
     text = '. '.join(sentences)
-    print(entity_recognition_spacy(text))
+    print('OLD TEXT : ' + text)
+    print('NEW TEXT : ' + entity_recognition_spacy(text))
