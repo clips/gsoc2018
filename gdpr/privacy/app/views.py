@@ -9,6 +9,7 @@ import sys
 import math
 from pathlib import Path
 from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
+from django.contrib.auth.models import User
 
 
 def preprocess(text):
@@ -259,3 +260,17 @@ def main():
     text = '. '.join(sentences)
     print('OLD TEXT : ' + text)
     print('NEW TEXT : ' + entity_recognition_spacy(text))
+
+
+def register_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('email')
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        password = request.POST.get('password')
+        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name)
+        user.set_password(password)
+        user.save()
+        return HttpResponse('OK')
+    else:
+        return render(request, 'register.html')
