@@ -10,6 +10,7 @@ import math
 from pathlib import Path
 from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 
 def preprocess(text):
@@ -268,9 +269,23 @@ def register_user(request):
         first_name = request.POST.get('fname')
         last_name = request.POST.get('lname')
         password = request.POST.get('password')
-        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name)
+        user = User.objects.create_user(
+            username=username, first_name=first_name, last_name=last_name)
         user.set_password(password)
         user.save()
         return HttpResponse('OK')
     else:
         return render(request, 'register.html')
+
+
+def login_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponse('login successfull')
+    else:
+        return render(request, 'login.html')
