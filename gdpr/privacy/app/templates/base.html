@@ -11,6 +11,10 @@
         <!-- Latest compiled JavaScript -->
         <script src = "{% static "bootstrap/js/bootstrap.min.js" %}"></script>
         <script src="{% static "js/base.js" %}"></script>
+        <script type="text/javascript">
+        {% block scripts %}
+        {% endblock %}
+        </script>
     </head>
     <body>
     
