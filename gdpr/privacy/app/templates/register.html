@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">                        
+        <h2>Registration</h2>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xs-offset-4">
+          <form id="login-form" class="form" action="#" method="POST" role="form">
+          {% csrf_token %}
+              <div class="form-group">
+                  <label class="form-label" for="name">First Name</label>
+                  <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" tabindex="1" required>
+              </div>
+              <div class="form-group">
+                  <label class="form-label" for="name">Last Name</label>
+                  <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name" tabindex="1" required>
+              </div>
+              <div class="form-group">
+                  <label class="form-label" for="email">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email" tabindex="2" required>
+              </div>                            
+              <div class="form-group">
+                  <label class="form-label" for="password">Password</label>
+                  <input type="password" class="form-control" id="passoword" name="password" placeholder="Password" tabindex="3" required>
+              </div>
+              <div class="text-center">
+                  <button type="submit" id="validate" class="btn btn-start-order">Register</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+{% endblock %}
