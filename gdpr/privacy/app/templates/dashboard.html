@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="row" style="margin-left:10px">
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="card-header">
+                <strong>Add new attribute </strong>
+                <small>Use this button to add a new attribute
+                </small>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-primary">Add New Attribute</button>
+            </div>
+        </div><!-- /# card -->
+
+    </div>
+</div>
+<div class="row" style="margin-left:10px">
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="card-header">
+                <strong>Aliases</strong>
+                <small>Use this to add aliases
+                </small>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-secondary" onclick="location.href='/admin'">Add New Alias</button>
+            </div>
+        </div><!-- /# card -->
+
+    </div>
+</div>
+
+{% endblock %}
