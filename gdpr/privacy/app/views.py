@@ -135,7 +135,7 @@ def preprocess(text):
         "you've": "you have"
     }
     # Switched off text lower case because it gives better performance on entity recognition
-    #text = text.lower()
+    # text = text.lower()
     for contraction in contractions:
         text = re.sub(contraction, contractions[contraction], text, flags=re.I)
     ''' Splitting text into sentences and words '''
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
     '''
-    #Stanford experiment
+    # Stanford experiment
     preprocessed_text = preprocess(text)
     print(preprocessed_text)
     for sentence in preprocessed_text:
@@ -251,7 +251,7 @@ def main():
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
     '''
-    #Stanford experiment
+    # Stanford experiment
     preprocessed_text = preprocess(text)
     print(preprocessed_text)
     for sentence in preprocessed_text:
@@ -307,8 +307,47 @@ def add_attribute(request):
                 attribute_title=attribute_title, attribute_action=attribute_action, user=user)
             attribute.clean()
             attribute.save()
-            return HttpResponse('ok')
+            if attribute_action == 'supp':
+                return HttpResponseRedirect('/add_suppression_configuration/' + str(attribute.id) + '/')
+            elif attribute_action == 'gen':
+                return HttpResponseRedirect('/add_generalization_configuration/' + str(attribute.id) + '/')
+            elif attribute_action == 'del':
+                return HttpResponseRedirect('/add_deletion_configuration/' + str(attribute.id) + '/')
+            else:
+                return HttpResponse('ILLEGAL')
         else:
             return render(request, 'add_attribute.html')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def add_suppression_configuration(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user, attribute_action='supp')
+        print('PASSSSSS pehle')
+        if len(attribute_configuration) > 0:
+            print('PASSSSSS')
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                supression_configuration, exists = Supression_Configuration.objects.get_or_create(
+                    attribute=attribute)
+                if request.POST.get('suppress_number'):
+                    #suppress_number = int(request.POST.get('suppress_number').strip())
+                    supression_configuration.suppress_number = int(request.POST.get(
+                        'suppress_number'))
+                    supression_configuration.suppress_percent = None
+                if request.POST.get('suppress_percent'):
+                    #suppress_percent = int(request.POST.get('suppress_percent').strip())
+                    supression_configuration.suppress_percent = int(request.POST.get(
+                        'suppress_percent'))
+                    supression_configuration.suppress_number = None
+                supression_configuration.clean()
+                supression_configuration.save()
+            else:
+                return render(request, 'add_supression_configuration.html', {'attribute': attribute})
+        else:
+            return HttpResponse('illegal')
     else:
         return HttpResponseRedirect('/login')
