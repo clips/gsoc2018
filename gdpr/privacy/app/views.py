@@ -343,6 +343,8 @@ def add_suppression_configuration(request, id):
                     supression_configuration.suppress_percent = int(request.POST.get(
                         'suppress_percent'))
                     supression_configuration.suppress_number = None
+                if request.POST.get('replacement_character'):
+                    supression_configuration.replacement_character = request.POST.get('replacement_character')
                 supression_configuration.clean()
                 supression_configuration.save()
             else:
