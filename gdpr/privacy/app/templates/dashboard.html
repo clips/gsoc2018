@@ -12,27 +12,67 @@
                 </small>
             </div>
             <div class="card-body">
-                <button type="button" class="btn btn-primary">Add New Attribute</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='/add_attribute'">Add New Attribute</button>
             </div>
         </div><!-- /# card -->
 
     </div>
 </div>
+
 <div class="row" style="margin-left:10px">
     <div class="col-md-12">
 
         <div class="card">
             <div class="card-header">
-                <strong>Aliases</strong>
-                <small>Use this to add aliases
+                <strong>Carry out Anonymization</strong>
+                <small>Use the NER models to anonymize
                 </small>
             </div>
             <div class="card-body">
-                <button type="button" class="btn btn-secondary" onclick="location.href='/admin'">Add New Alias</button>
+                <button type="button" class="btn btn-secondary" onclick="location.href='/admin'">Enter Text</button>
             </div>
-        </div><!-- /# card -->
+        </div>
 
     </div>
 </div>
+
+<div class="row" style="margin-left:10px">
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <strong class="card-title">Attributes and Configurations</strong>
+        </div>
+        <div class="card-body">
+  <table id="bootstrap-data-table" class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Attribute Name</th>
+        <th>Attribute Action</th>
+        <th>Modify Action</th>
+        <th>Add Alias</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for attribute in attributes %}
+      <tr>
+        <td>{{ attribute.attribute_title }}</td>
+        <td>{{ attribute.get_attribute_action_display }}</td>
+        <td>
+        <button type="button" class="btn btn-primary" onclick="location.href='{{ attribute.link }}'">Modify Action Configuration </button>
+        </td>
+        <td>
+        <button type="button" class="btn btn-success" onclick="location.href='/add_alias/{{attribute.id}}/'">Add Alias </button> </td>
+        <tf
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+        </div>
+    </div>
+</div>
+
+
+                </div>
 
 {% endblock %}

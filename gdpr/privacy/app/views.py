@@ -390,7 +390,8 @@ def add_alias(request, id):
             attribute = attribute_configuration[0]
             if request.method == 'POST':
                 alias = request.POST.get('alias')
-                attribute_alias = Attribute_Alias.objects.create(alias=alias, attribute=attribute)
+                attribute_alias = Attribute_Alias.objects.create(
+                    alias=alias, attribute=attribute)
                 attribute_alias.save()
                 return HttpResponseRedirect('/dashboard')
             else:
@@ -404,6 +405,17 @@ def add_alias(request, id):
 def show_dashboard(request):
     if request.user.is_authenticated:
         user = request.user
-        return render(request, 'dashboard.html', {'user': user})
+        attributes = Attribute_Configuration.objects.filter(user=user)
+        for attribute in attributes:
+            if attribute.attribute_action == 'supp':
+                attribute.link = '/add_suppression_configuration/' + \
+                    str(attribute.id) + '/'
+            if attribute.attribute_action == 'del':
+                attribute.link = '/add_deletion_configuration/' + str(attribute.id) + '/'
+            if attribute.attribute_action == 'gen':
+                attribute.link = '/add_generalization_configuration/' + \
+                    str(attribute.id) + '/'
+
+        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes})
     else:
         return HttpResponseRedirect('/login')
