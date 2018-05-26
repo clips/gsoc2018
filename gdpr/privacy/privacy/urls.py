@@ -32,4 +32,5 @@ urlpatterns = [
         views.show_dashboard),
     url(r'add_alias/(\d+)/$',
         views.add_alias),
+    url(r'anonymize', views.anonymize)
 ]

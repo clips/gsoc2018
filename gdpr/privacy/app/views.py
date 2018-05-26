@@ -158,7 +158,7 @@ def entity_recognition_stanford(tokens, base_path):
     return ' '.join(replaced_text_list)
 
 
-def entity_recognition_spacy(text):
+def entity_recognition_spacy(text, user):
     ''' Uses the SPACY NER model. Currently written using the en_core_web_sm model '''
     spacy_model = spacy.load('en_core_web_sm')
     document = spacy_model(text)
@@ -168,7 +168,7 @@ def entity_recognition_spacy(text):
     number_of_entities = len(entities_in_document)
     ''' Function to slice and replace substrings with entity labels '''
     for index, ent in enumerate(entities_in_document):
-        new_label = give_new_label(ent.label_, ent.text)
+        new_label = give_new_label(ent.label_, ent.text, user)
         if index is 0:
             anonymized_text += old_text[:ent.start_char] + new_label + \
                 old_text[ent.end_char:entities_in_document[
@@ -182,11 +182,11 @@ def entity_recognition_spacy(text):
     return anonymized_text
 
 
-def give_new_label(label, text):
+def give_new_label(label, text, user):
     ''' When given the entity label and the actual entity text, returns the replacement entity '''
     try:
         # Checking for the alias in the DB
-        alias = Attribute_Alias.objects.get(alias=label)
+        alias = Attribute_Alias.objects.get(alias=label, user=user)
     except Attribute_Alias.DoesNotExist:
         # return and terminate function if it does not exist
         return label
@@ -391,7 +391,7 @@ def add_alias(request, id):
             if request.method == 'POST':
                 alias = request.POST.get('alias')
                 attribute_alias = Attribute_Alias.objects.create(
-                    alias=alias, attribute=attribute)
+                    alias=alias, attribute=attribute, user=user)
                 attribute_alias.save()
                 return HttpResponseRedirect('/dashboard')
             else:
@@ -411,11 +411,26 @@ def show_dashboard(request):
                 attribute.link = '/add_suppression_configuration/' + \
                     str(attribute.id) + '/'
             if attribute.attribute_action == 'del':
-                attribute.link = '/add_deletion_configuration/' + str(attribute.id) + '/'
+                attribute.link = '/add_deletion_configuration/' + \
+                    str(attribute.id) + '/'
             if attribute.attribute_action == 'gen':
                 attribute.link = '/add_generalization_configuration/' + \
                     str(attribute.id) + '/'
 
         return render(request, 'dashboard.html', {'user': user, 'attributes': attributes})
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def anonymize(request):
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            text_to_anonymize = request.POST.get('text_to_anonymize')
+            anonymized_text = entity_recognition_spacy(text_to_anonymize, user)
+            return render(request, 'anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize})
+        else:
+            return render(request, 'anonymize.html')
+
     else:
         return HttpResponseRedirect('/login')
