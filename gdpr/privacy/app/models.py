@@ -59,3 +59,5 @@ class Attribute_Alias(models.Model):
     attribute = models.ForeignKey(Attribute_Configuration)
     # The alias the attribute/entity name
     alias = models.TextField()
+    # Adding user for faster DB lookups
+    user = models.ForeignKey(User, null=True)
