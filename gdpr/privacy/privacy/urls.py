@@ -28,4 +28,8 @@ urlpatterns = [
         views.add_suppression_configuration),
     url(r'add_deletion_configuration/(\d+)/$',
         views.add_deletion_configuration),
+    url(r'dashboard/$',
+        views.show_dashboard),
+    url(r'add_alias/(\d+)/$',
+        views.add_alias),
 ]

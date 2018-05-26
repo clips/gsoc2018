@@ -275,7 +275,8 @@ def register_user(request):
             username=username, first_name=first_name, last_name=last_name)
         user.set_password(password)
         user.save()
-        return HttpResponse('OK')
+        login(request, user)
+        return HttpResponseRedirect('/dashboard')
     else:
         return render(request, 'register.html')
 
@@ -288,7 +289,7 @@ def login_user(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponse('login successfull')
+                return HttpResponseRedirect('/dashboard')
     else:
         return render(request, 'login.html')
 
@@ -315,6 +316,7 @@ def add_attribute(request):
                 return HttpResponseRedirect('/add_deletion_configuration/' + str(attribute.id) + '/')
             else:
                 return HttpResponse('ILLEGAL')
+            return HttpResponseRedirect('/dashboard')
         else:
             return render(request, 'add_attribute.html')
     else:
@@ -348,10 +350,11 @@ def add_suppression_configuration(request, id):
                         'replacement_character')
                 supression_configuration.clean()
                 supression_configuration.save()
+                return HttpResponseRedirect('/dashboard')
             else:
                 return render(request, 'add_supression_configuration.html', {'attribute': attribute})
         else:
-            return HttpResponse('illegal')
+            return HttpResponseRedirect('/dashboard')
     else:
         return HttpResponseRedirect('/login')
 
@@ -369,9 +372,38 @@ def add_deletion_configuration(request, id):
                 deletion_configuration.replacement_name = request.POST.get(
                     'replacement_name')
                 deletion_configuration.save()
+                return HttpResponseRedirect('/dashboard')
             else:
                 return render(request, 'add_deletion_configuration.html', {'attribute': attribute})
         else:
-            return HttpResponse('illegal')
+            return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def add_alias(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user)
+        if len(attribute_configuration) > 0:
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                alias = request.POST.get('alias')
+                attribute_alias = Attribute_Alias.objects.create(alias=alias, attribute=attribute)
+                attribute_alias.save()
+                return HttpResponseRedirect('/dashboard')
+            else:
+                return render(request, 'add_alias.html', {'attribute': attribute})
+        else:
+            return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def show_dashboard(request):
+    if request.user.is_authenticated:
+        user = request.user
+        return render(request, 'dashboard.html', {'user': user})
     else:
         return HttpResponseRedirect('/login')
