@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from django.db import models
 # Create your models here.
+from django.contrib.auth.models import User
 
 
 class Attribute_Configuration(models.Model):
@@ -17,6 +18,13 @@ class Attribute_Configuration(models.Model):
     )
     attribute_action = models.CharField(
         max_length=5, choices=ATTRIBUTE_ACTION_CHOICES)
+    user = models.ForeignKey(User, null=True)
+
+    def clean(self, *args, **kwargs):
+        print('CHECKINGGG')
+        if self.attribute_action != 'supp' and self.attribute_action != 'gen' and self.attribute_action != 'del':
+            raise Exception(
+                'Illegal value entered')
 
     def __str__(self):
         return self.attribute_title + ' - ' + self.attribute_action
