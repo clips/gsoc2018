@@ -19,7 +19,9 @@ from app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'test/', views.preprocess),
+    url(r'^test/$', views.preprocess),
     url(r'register/', views.register_user),
     url(r'login/', views.login_user),
+    url(r'form-test/', views.test),
+    url(r'add_attribute/', views.add_attribute),
 ]

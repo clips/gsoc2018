@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import re
 import spacy
 import os
@@ -154,7 +154,7 @@ def entity_recognition_stanford(tokens, base_path):
         classifier_model_path, ner_jar_path, encoding='utf-8')
     ner_tagged = stanford_tagger.tag(tokens)
     replaced_text_list = [word[0] if word[1] == "O" else str(
-        '|'+word[1]+'|') for word in ner_tagged]
+        '|' + word[1] + '|') for word in ner_tagged]
     return ' '.join(replaced_text_list)
 
 
@@ -171,12 +171,14 @@ def entity_recognition_spacy(text):
         new_label = give_new_label(ent.label_, ent.text)
         if index is 0:
             anonymized_text += old_text[:ent.start_char] + new_label + \
-                old_text[ent.end_char:entities_in_document[index+1].start_char]
-        elif index is number_of_entities-1:
+                old_text[ent.end_char:entities_in_document[
+                    index + 1].start_char]
+        elif index is number_of_entities - 1:
             anonymized_text += new_label + old_text[ent.end_char:]
         else:
             anonymized_text += new_label + \
-                old_text[ent.end_char:entities_in_document[index+1].start_char]
+                old_text[ent.end_char:entities_in_document[
+                    index + 1].start_char]
     return anonymized_text
 
 
@@ -211,16 +213,16 @@ def give_supressed_attribute(text, attribute_configuration):
         if number > len(text):
             # If the length of the bits to supress is greater than text length
             # then replace the string entirely with asterix's
-            new_text = replacement_character*len(text)
+            new_text = replacement_character * len(text)
         else:
             # otherwise shave off the last supress_number number of digits
-            new_text = text[:-1*number] + replacement_character*number
+            new_text = text[:-1 * number] + replacement_character * number
         return new_text
     else:
         # Logic to follow in case the percent of bits to supress is provided
         percent = supression_configuration.suppress_percent
-        number = int(math.floor(0.01*percent*len(text)))
-        new_text = text[:-1*number] + replacement_character*number
+        number = int(math.floor(0.01 * percent * len(text)))
+        new_text = text[:-1 * number] + replacement_character * number
         return new_text
 
 
@@ -289,3 +291,24 @@ def login_user(request):
                 return HttpResponse('login successfull')
     else:
         return render(request, 'login.html')
+
+
+def test(request):
+    pass
+
+
+def add_attribute(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            user = request.user
+            attribute_title = request.POST.get('title')
+            attribute_action = request.POST.get('attribute_action')
+            attribute = Attribute_Configuration.objects.create(
+                attribute_title=attribute_title, attribute_action=attribute_action, user=user)
+            attribute.clean()
+            attribute.save()
+            return HttpResponse('ok')
+        else:
+            return render(request, 'add_attribute.html')
+    else:
+        return HttpResponseRedirect('/login')
