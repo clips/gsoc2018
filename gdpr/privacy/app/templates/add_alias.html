@@ -16,7 +16,7 @@
                     <h3 class="text-center">Enter new Alias for {{attribute.attribute_title}}</h3>
                 </div>
                 <hr>
-                <form action="/add_deletion_configuration/{{attribute.id}}/" method="post">
+                <form action="/add_alias/{{attribute.id}}/" method="post">
                     {% csrf_token %}
                     <div class="form-group has-success">
                         <label for="cc-name" class="control-label mb-1">Alias</label>
