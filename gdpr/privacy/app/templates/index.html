@@ -40,7 +40,7 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="./"><img src="{% static "images/clips.jpeg" alt="Logo" %}" style="margin-top:15px"></a>
+                <a class="navbar-brand" href="./"><img src="{% static "images/logo.png" alt="Logo" %}" style="margin-top:15px; margin-bottom:15px"></a>
                 <a class="navbar-brand hidden" href="./"><img src="{% static "images/logo2.png" alt="Logo" %}"></a>
             </div>
 
@@ -65,6 +65,7 @@
 
             <div class="header-menu">
                 <div class="header-right">
+                Welcome {{user.first_name}} {{user.last_name}}
                 <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                     <div class="user-area dropdown float-right">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -72,13 +73,8 @@
                         </a>
 
                         <div class="user-menu dropdown-menu">
-                                <a class="nav-link" href="#"><i class="fa fa- user"></i>Logout</a>
+                                <a class="nav-link" href="/logout"><i class="fa fa- user"></i>Logout</a>
 
-                                <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
-
-                                <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
-
-                                <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
                         </div>
                     </div>
                 </div>

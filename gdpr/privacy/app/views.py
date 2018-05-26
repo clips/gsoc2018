@@ -10,7 +10,7 @@ import math
 from pathlib import Path
 from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 def preprocess(text):
@@ -434,3 +434,10 @@ def anonymize(request):
 
     else:
         return HttpResponseRedirect('/login')
+
+
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return HttpResponseRedirect('/login')
+    return HttpResponseRedirect('/login')
