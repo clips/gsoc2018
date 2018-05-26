@@ -344,11 +344,33 @@ def add_suppression_configuration(request, id):
                         'suppress_percent'))
                     supression_configuration.suppress_number = None
                 if request.POST.get('replacement_character'):
-                    supression_configuration.replacement_character = request.POST.get('replacement_character')
+                    supression_configuration.replacement_character = request.POST.get(
+                        'replacement_character')
                 supression_configuration.clean()
                 supression_configuration.save()
             else:
                 return render(request, 'add_supression_configuration.html', {'attribute': attribute})
+        else:
+            return HttpResponse('illegal')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def add_deletion_configuration(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user, attribute_action='del')
+        if len(attribute_configuration) > 0:
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                deletion_configuration, exists = Deletion_Configuration.objects.get_or_create(
+                    attribute=attribute)
+                deletion_configuration.replacement_name = request.POST.get(
+                    'replacement_name')
+                deletion_configuration.save()
+            else:
+                return render(request, 'add_deletion_configuration.html', {'attribute': attribute})
         else:
             return HttpResponse('illegal')
     else:

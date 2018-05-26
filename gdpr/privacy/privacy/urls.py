@@ -24,5 +24,8 @@ urlpatterns = [
     url(r'login/$', views.login_user),
     url(r'form-test/$', views.test),
     url(r'add_attribute/$', views.add_attribute),
-    url(r'add_suppression_configuration/(\d+)/$', views.add_suppression_configuration),
+    url(r'add_suppression_configuration/(\d+)/$',
+        views.add_suppression_configuration),
+    url(r'add_deletion_configuration/(\d+)/$',
+        views.add_deletion_configuration),
 ]
