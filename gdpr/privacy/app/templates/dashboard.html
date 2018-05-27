@@ -73,6 +73,33 @@
 </div>
 
 
-                </div>
+</div>
 
+<div class="row" style="margin-left:10px">
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <strong class="card-title">Aliases added</strong>
+        </div>
+        <div class="card-body">
+  <table id="bootstrap-data-table" class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Alias for the NER model</th>
+        <th>Attribute Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alias in aliases %}
+      <tr>
+        <td>{{ alias.alias }}</td>
+        <td>{{ alias.attribute.attribute_title }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+        </div>
+    </div>
+</div>
+</div>
 {% endblock %}

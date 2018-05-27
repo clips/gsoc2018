@@ -282,20 +282,18 @@ def register_user(request):
 
 
 def login_user(request):
-    if request.method == 'POST':
-        username = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_active:
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/dashboard')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('email')
+            password = request.POST.get('password')
+            user = authenticate(username=username, password=password)
+            if user:
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
-    else:
-        return render(request, 'login.html')
-
-
-def test(request):
-    pass
+        else:
+            return render(request, 'login.html')
 
 
 def add_attribute(request):
@@ -406,6 +404,7 @@ def show_dashboard(request):
     if request.user.is_authenticated:
         user = request.user
         attributes = Attribute_Configuration.objects.filter(user=user)
+        aliases = Attribute_Alias.objects.filter(user=user)
         for attribute in attributes:
             if attribute.attribute_action == 'supp':
                 attribute.link = '/add_suppression_configuration/' + \
@@ -417,7 +416,7 @@ def show_dashboard(request):
                 attribute.link = '/add_generalization_configuration/' + \
                     str(attribute.id) + '/'
 
-        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes})
+        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases})
     else:
         return HttpResponseRedirect('/login')
 

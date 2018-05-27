@@ -10,7 +10,7 @@
   </div>
   <div class="row">
       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xs-offset-4">
-          <form id="login-form" class="form" action="#" method="POST" role="form">
+          <form id="login-form" class="form" action="#" method="POST" role="form" style="border:2px solid black">
           {% csrf_token %}
               <div class="form-group">
                   <label class="form-label" for="email">Email</label>
@@ -24,7 +24,13 @@
                   <button type="submit" class="btn btn-start-order">Login</button>
               </div>
           </form>
+
       </div>
+  </div>
+  <div class="row">
+    <div class="form-group text-center" style="">
+      <button type="submit" class="btn btn-start-order btn-primary" onclick="location.href='/register'" >New User? Register</button>
+    </div>
   </div>
 </div>
 {% endblock %}
