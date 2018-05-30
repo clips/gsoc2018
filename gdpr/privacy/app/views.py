@@ -8,7 +8,7 @@ import os
 import sys
 import math
 from pathlib import Path
-from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
+from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration, Regex_Pattern
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
@@ -440,3 +440,24 @@ def logout_user(request):
         logout(request)
         return HttpResponseRedirect('/login')
     return HttpResponseRedirect('/login')
+
+def add_regex_pattern(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user)
+        if len(attribute_configuration) > 0:
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                regular_expression = request.POST.get('regular_expression')
+                regex_pattern = Regex_Pattern.objects.create(
+                    regular_expression=regular_expression, attribute=attribute, user=user)
+                regex_pattern.save()
+                return HttpResponseRedirect('/dashboard')
+            else:
+                return render(request, 'add_regex_pattern.html', {'attribute': attribute})
+        else:
+            return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
+

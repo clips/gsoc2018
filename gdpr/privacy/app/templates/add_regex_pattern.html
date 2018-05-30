@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-md-10" style="margin: 0 auto;">
+  <div class="card">
+      <div class="card-header">
+          <strong class="card-title">Add regex patterm </strong>
+      </div>
+      <div class="card-body">
+        <!-- Credit Card -->
+        <div id="pay-invoice">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3 class="text-center">Enter new pattern for <strong>{{attribute.attribute_title}}</strong></h3>
+                </div>
+                <hr>
+                <form action="/add_regex_pattern/{{attribute.id}}/" method="post">
+                    {% csrf_token %}
+                    <div class="form-group has-success">
+                        <label for="cc-name" class="control-label mb-1">Pattern</label>
+                        <input id="title" name="regular_expression" type="text" class="form-control cc-name valid"aria-required="true" aria-invalid="false" aria-describedby="cc-name-error" required/>
+                        <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
+                    </div>
+                  <div class="form-group">
+                  <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                      <span id="payment-button-amount">Submit</span>
+                  </button>
+                  </div>
+                </form>
+            </div>
+        </div>
+
+      </div>
+  </div> <!-- .card -->
+
+</div><!--/.col-->
+</div>
+{% endblock %}

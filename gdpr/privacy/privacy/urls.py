@@ -33,5 +33,7 @@ urlpatterns = [
         views.add_alias),
     url(r'^anonymize$', views.anonymize),
     url(r'^logout/$', views.logout_user),
-    url('^$', views.show_dashboard)
+    url('^$', views.show_dashboard),
+    url(r'^add_regex_pattern/(\d+)/$',
+        views.add_regex_pattern),
 ]
