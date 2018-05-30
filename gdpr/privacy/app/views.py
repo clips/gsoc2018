@@ -441,6 +441,7 @@ def logout_user(request):
         return HttpResponseRedirect('/login')
     return HttpResponseRedirect('/login')
 
+
 def add_regex_pattern(request, id):
     if request.user.is_authenticated:
         user = request.user
@@ -460,4 +461,3 @@ def add_regex_pattern(request, id):
             return HttpResponseRedirect('/dashboard')
     else:
         return HttpResponseRedirect('/login')
-
