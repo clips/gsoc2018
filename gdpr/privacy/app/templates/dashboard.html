@@ -51,6 +51,7 @@
         <th>Attribute Action</th>
         <th>Modify Action</th>
         <th>Add Alias</th>
+        <th>Add Regex</th>
       </tr>
     </thead>
     <tbody>
@@ -63,7 +64,9 @@
         </td>
         <td>
         <button type="button" class="btn btn-success" onclick="location.href='/add_alias/{{attribute.id}}/'">Add Alias </button> </td>
-        <tf
+        <td>
+        <button type="button" class="btn btn-success" onclick="location.href='/add_regex_pattern/{{attribute.id}}/'">Add pattern </button> 
+        </td>
       </tr>
       {% endfor %}
     </tbody>
