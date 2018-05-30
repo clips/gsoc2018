@@ -421,12 +421,38 @@ def show_dashboard(request):
         return HttpResponseRedirect('/login')
 
 
+def regex_based_anonymization(user, text):
+    patterns = Regex_Pattern.objects.filter(user=user)
+    new_text = text
+    for pattern in patterns:
+        regular_expression = re.compile(pattern.regular_expression)
+        list_of_matches = re.findall(regular_expression, text)
+        if list_of_matches:
+            attribute_configuration = pattern.attribute
+            for match in list_of_matches:
+                if attribute_configuration.attribute_action == 'del':
+                    # The lookup can be shifted outside the loop and optimized
+                    # To be done later
+                    deletion_configuration = Deletion_Configuration.objects.get(
+                        attribute=attribute_configuration)
+                    replacement_text = deletion_configuration.replacement_name
+                elif attribute_configuration.attribute_action == 'supp':
+                    replacement_text = give_supressed_attribute(
+                        match, attribute_configuration)
+                else:
+                    replacement_text = match
+                new_text = new_text.replace(match, replacement_text)
+    return new_text
+
+
 def anonymize(request):
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
             text_to_anonymize = request.POST.get('text_to_anonymize')
-            anonymized_text = entity_recognition_spacy(text_to_anonymize, user)
+            anonymized_text = regex_based_anonymization(
+                user, text_to_anonymize)
+            #anonymized_text = entity_recognition_spacy(anonymized_text, user)
             return render(request, 'anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize})
         else:
             return render(request, 'anonymize.html')
