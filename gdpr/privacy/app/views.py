@@ -452,7 +452,7 @@ def anonymize(request):
             text_to_anonymize = request.POST.get('text_to_anonymize')
             anonymized_text = regex_based_anonymization(
                 user, text_to_anonymize)
-            #anonymized_text = entity_recognition_spacy(anonymized_text, user)
+            anonymized_text = entity_recognition_spacy(anonymized_text, user)
             return render(request, 'anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize})
         else:
             return render(request, 'anonymize.html')
