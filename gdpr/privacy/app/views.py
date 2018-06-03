@@ -167,18 +167,24 @@ def entity_recognition_spacy(text, user):
     entities_in_document = document.ents
     number_of_entities = len(entities_in_document)
     ''' Function to slice and replace substrings with entity labels '''
-    for index, ent in enumerate(entities_in_document):
+    if number_of_entities is 1:
+        ent = entities_in_document[0]
         new_label = give_new_label(ent.label_, ent.text, user)
-        if index is 0:
-            anonymized_text += old_text[:ent.start_char] + new_label + \
-                old_text[ent.end_char:entities_in_document[
-                    index + 1].start_char]
-        elif index is number_of_entities - 1:
-            anonymized_text += new_label + old_text[ent.end_char:]
-        else:
-            anonymized_text += new_label + \
-                old_text[ent.end_char:entities_in_document[
-                    index + 1].start_char]
+        anonymized_text = old_text[:ent.start_char] + \
+            new_label + old_text[ent.end_char:]
+    else:
+        for index, ent in enumerate(entities_in_document):
+            new_label = give_new_label(ent.label_, ent.text, user)
+            if index is 0:
+                anonymized_text += old_text[:ent.start_char] + new_label + \
+                    old_text[ent.end_char:entities_in_document[
+                        index + 1].start_char]
+            elif index is number_of_entities - 1:
+                anonymized_text += new_label + old_text[ent.end_char:]
+            else:
+                anonymized_text += new_label + \
+                    old_text[ent.end_char:entities_in_document[
+                        index + 1].start_char]
     return anonymized_text
 
 
