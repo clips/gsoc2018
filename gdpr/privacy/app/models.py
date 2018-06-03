@@ -61,3 +61,12 @@ class Attribute_Alias(models.Model):
     alias = models.TextField()
     # Adding user for faster DB lookups
     user = models.ForeignKey(User, null=True)
+
+
+class Regex_Pattern(models.Model):
+    # Linking it to the attribute
+    attribute = models.ForeignKey(Attribute_Configuration)
+    # Store the raw string of the pattern
+    regular_expression = models.CharField(max_length=500)
+    # Adding user for faster DB lookups
+    user = models.ForeignKey(User, null=True)

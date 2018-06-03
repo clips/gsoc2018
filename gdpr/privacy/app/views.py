@@ -8,7 +8,7 @@ import os
 import sys
 import math
 from pathlib import Path
-from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration
+from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration, Regex_Pattern
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
@@ -167,18 +167,24 @@ def entity_recognition_spacy(text, user):
     entities_in_document = document.ents
     number_of_entities = len(entities_in_document)
     ''' Function to slice and replace substrings with entity labels '''
-    for index, ent in enumerate(entities_in_document):
+    if number_of_entities is 1:
+        ent = entities_in_document[0]
         new_label = give_new_label(ent.label_, ent.text, user)
-        if index is 0:
-            anonymized_text += old_text[:ent.start_char] + new_label + \
-                old_text[ent.end_char:entities_in_document[
-                    index + 1].start_char]
-        elif index is number_of_entities - 1:
-            anonymized_text += new_label + old_text[ent.end_char:]
-        else:
-            anonymized_text += new_label + \
-                old_text[ent.end_char:entities_in_document[
-                    index + 1].start_char]
+        anonymized_text = old_text[:ent.start_char] + \
+            new_label + old_text[ent.end_char:]
+    else:
+        for index, ent in enumerate(entities_in_document):
+            new_label = give_new_label(ent.label_, ent.text, user)
+            if index is 0:
+                anonymized_text += old_text[:ent.start_char] + new_label + \
+                    old_text[ent.end_char:entities_in_document[
+                        index + 1].start_char]
+            elif index is number_of_entities - 1:
+                anonymized_text += new_label + old_text[ent.end_char:]
+            else:
+                anonymized_text += new_label + \
+                    old_text[ent.end_char:entities_in_document[
+                        index + 1].start_char]
     return anonymized_text
 
 
@@ -405,6 +411,7 @@ def show_dashboard(request):
         user = request.user
         attributes = Attribute_Configuration.objects.filter(user=user)
         aliases = Attribute_Alias.objects.filter(user=user)
+        regex_patterns = Regex_Pattern.objects.filter(user=user)
         for attribute in attributes:
             if attribute.attribute_action == 'supp':
                 attribute.link = '/add_suppression_configuration/' + \
@@ -416,9 +423,33 @@ def show_dashboard(request):
                 attribute.link = '/add_generalization_configuration/' + \
                     str(attribute.id) + '/'
 
-        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases})
+        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases, 'regex_patterns':regex_patterns})
     else:
         return HttpResponseRedirect('/login')
+
+
+def regex_based_anonymization(user, text):
+    patterns = Regex_Pattern.objects.filter(user=user)
+    new_text = text
+    for pattern in patterns:
+        regular_expression = re.compile(pattern.regular_expression)
+        list_of_matches = re.findall(regular_expression, text)
+        if list_of_matches:
+            attribute_configuration = pattern.attribute
+            for match in list_of_matches:
+                if attribute_configuration.attribute_action == 'del':
+                    # The lookup can be shifted outside the loop and optimized
+                    # To be done later
+                    deletion_configuration = Deletion_Configuration.objects.get(
+                        attribute=attribute_configuration)
+                    replacement_text = deletion_configuration.replacement_name
+                elif attribute_configuration.attribute_action == 'supp':
+                    replacement_text = give_supressed_attribute(
+                        match, attribute_configuration)
+                else:
+                    replacement_text = match
+                new_text = new_text.replace(match, replacement_text)
+    return new_text
 
 
 def anonymize(request):
@@ -426,7 +457,9 @@ def anonymize(request):
         user = request.user
         if request.method == 'POST':
             text_to_anonymize = request.POST.get('text_to_anonymize')
-            anonymized_text = entity_recognition_spacy(text_to_anonymize, user)
+            anonymized_text = regex_based_anonymization(
+                user, text_to_anonymize)
+            anonymized_text = entity_recognition_spacy(anonymized_text, user)
             return render(request, 'anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize})
         else:
             return render(request, 'anonymize.html')
@@ -440,3 +473,24 @@ def logout_user(request):
         logout(request)
         return HttpResponseRedirect('/login')
     return HttpResponseRedirect('/login')
+
+
+def add_regex_pattern(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user)
+        if len(attribute_configuration) > 0:
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                regular_expression = request.POST.get('regular_expression')
+                regex_pattern = Regex_Pattern.objects.create(
+                    regular_expression=regular_expression, attribute=attribute, user=user)
+                regex_pattern.save()
+                return HttpResponseRedirect('/dashboard')
+            else:
+                return render(request, 'add_regex_pattern.html', {'attribute': attribute})
+        else:
+            return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
