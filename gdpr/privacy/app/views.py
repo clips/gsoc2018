@@ -411,6 +411,7 @@ def show_dashboard(request):
         user = request.user
         attributes = Attribute_Configuration.objects.filter(user=user)
         aliases = Attribute_Alias.objects.filter(user=user)
+        regex_patterns = Regex_Pattern.objects.filter(user=user)
         for attribute in attributes:
             if attribute.attribute_action == 'supp':
                 attribute.link = '/add_suppression_configuration/' + \
@@ -422,7 +423,7 @@ def show_dashboard(request):
                 attribute.link = '/add_generalization_configuration/' + \
                     str(attribute.id) + '/'
 
-        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases})
+        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases, 'regex_patterns':regex_patterns})
     else:
         return HttpResponseRedirect('/login')
 

@@ -105,4 +105,32 @@
     </div>
 </div>
 </div>
+
+<div class="row" style="margin-left:10px">
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <strong class="card-title">Regex Patterns added</strong>
+        </div>
+        <div class="card-body">
+  <table id="bootstrap-data-table" class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Regular Expression</th>
+        <th>Attribute Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for regex_pattern in regex_patterns %}
+      <tr>
+        <td>{{ regex_pattern.regular_expression }}</td>
+        <td>{{ regex_pattern.attribute.attribute_title }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+        </div>
+    </div>
+</div>
+</div>
 {% endblock %}
