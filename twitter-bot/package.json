@@ -1,0 +1,21 @@
+{
+  "name": "twitter-bot",
+  "version": "1.0.0",
+  "description": "Test Twitter Bot in Node.js",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"No test specified\" && exit 1"
+  },
+  "keywords": [
+    "twitter",
+    "bot",
+    "test"
+  ],
+  "author": "Alexander Rossa",
+  "license": "MIT",
+  "dependencies": {
+    "twit": "^2.2.10",
+    "twitter": "^1.7.1"
+  }
+}
