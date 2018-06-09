@@ -18,7 +18,7 @@ class Attribute_Configuration(models.Model):
     )
     attribute_action = models.CharField(
         max_length=5, choices=ATTRIBUTE_ACTION_CHOICES)
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def clean(self, *args, **kwargs):
         print('CHECKINGGG')
@@ -31,7 +31,8 @@ class Attribute_Configuration(models.Model):
 
 
 class Supression_Configuration(models.Model):
-    attribute = models.OneToOneField(Attribute_Configuration, primary_key=True)
+    attribute = models.OneToOneField(
+        Attribute_Configuration, primary_key=True, on_delete=models.CASCADE)
     # The field below gives number of characters to suppress. Can also use %
     suppress_number = models.IntegerField(null=True, blank=True, default=None)
     # The field below specifies the percentage of characters to suppress
@@ -49,24 +50,27 @@ class Supression_Configuration(models.Model):
 
 class Deletion_Configuration(models.Model):
     # Linking It to the attribute
-    attribute = models.OneToOneField(Attribute_Configuration, primary_key=True)
+    attribute = models.OneToOneField(
+        Attribute_Configuration, primary_key=True, on_delete=models.CASCADE)
     # The title you want to replace it with
     replacement_name = models.TextField()
 
 
 class Attribute_Alias(models.Model):
     # Linking it to the attribute
-    attribute = models.ForeignKey(Attribute_Configuration)
+    attribute = models.ForeignKey(
+        Attribute_Configuration, on_delete=models.CASCADE)
     # The alias the attribute/entity name
     alias = models.TextField()
     # Adding user for faster DB lookups
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
 
 class Regex_Pattern(models.Model):
     # Linking it to the attribute
-    attribute = models.ForeignKey(Attribute_Configuration)
+    attribute = models.ForeignKey(
+        Attribute_Configuration, on_delete=models.CASCADE)
     # Store the raw string of the pattern
     regular_expression = models.CharField(max_length=500)
     # Adding user for faster DB lookups
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
