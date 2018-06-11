@@ -1,0 +1,4 @@
+qunicorn
+Flask
+scikit-learn
+numpy
