@@ -11,6 +11,7 @@ from pathlib import Path
 from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration, Regex_Pattern
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from nltk.corpus import wordnet as wn
 
 
 def preprocess(text):
@@ -423,7 +424,7 @@ def show_dashboard(request):
                 attribute.link = '/add_generalization_configuration/' + \
                     str(attribute.id) + '/'
 
-        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases, 'regex_patterns':regex_patterns})
+        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases, 'regex_patterns': regex_patterns})
     else:
         return HttpResponseRedirect('/login')
 
@@ -494,3 +495,20 @@ def add_regex_pattern(request, id):
             return HttpResponseRedirect('/dashboard')
     else:
         return HttpResponseRedirect('/login')
+
+
+def extract_part_holonym(word, escalation_level):
+    if escalation_level == 1:
+        if isinstance(word, str):
+            synset_word = wn.synsets(word)[0]
+        else:
+            synset_word = word
+        holonyms = synset_word.part_holonyms()
+        return holonyms[0]
+    else:
+        if isinstance(word, str):
+            synset_word = wn.synsets(word)[0]
+        else:
+            synset_word = word
+        holonym = synset_word.part_holonyms()[0]
+        return extract_part_holonym(holonym, escalation_level - 1)
