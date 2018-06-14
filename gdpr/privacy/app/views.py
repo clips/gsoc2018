@@ -512,3 +512,26 @@ def extract_part_holonym(word, escalation_level):
             synset_word = word
         holonym = synset_word.part_holonyms()[0]
         return extract_part_holonym(holonym, escalation_level - 1)
+
+
+def add_generalization_configuration(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user, attribute_action='gen')
+        if len(attribute_configuration) > 0:
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                generalization_configuration, exists = Generalization_Configuration.objects.get_or_create(
+                    attribute=attribute)
+                generalization_configuration.generalization_action = request.POST.get(
+                    'generalization_action')
+                generalization_configuration.clean()
+                generalization_configuration.save()
+                return HttpResponseRedirect('/dashboard')
+            else:
+                return render(request, 'add_generalization_configuration.html', {'attribute': attribute})
+        else:
+            return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
