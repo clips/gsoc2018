@@ -88,3 +88,11 @@ class Generalization_Configuration(models.Model):
     )
     generalization_action = models.CharField(
         max_length=6, choices=GENERALIZATION_ACTION_CHOICES)
+
+    def clean(self, *args, **kwargs):
+        if self.generalization_action != 'holonym' and self.generalization_action != 'wordvec':
+            raise Exception(
+                'Illegal generalization option entered')
+
+    def __str__(self):
+        return self.attribute_title + ' - ' + self.generalization_action
