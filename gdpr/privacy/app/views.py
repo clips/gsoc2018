@@ -8,7 +8,9 @@ import os
 import sys
 import math
 from pathlib import Path
-from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration, Regex_Pattern
+from .models import Attribute_Configuration, Attribute_Alias, \
+    Supression_Configuration, Deletion_Configuration, \
+    Regex_Pattern, Generalization_Configuration
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from nltk.corpus import wordnet as wn

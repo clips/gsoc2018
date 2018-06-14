@@ -36,4 +36,6 @@ urlpatterns = [
     url('^$', views.show_dashboard),
     url(r'^add_regex_pattern/(\d+)/$',
         views.add_regex_pattern),
+    url(r'^add_generalization_configuration/(\d+)/$',
+        views.add_generalization_configuration),
 ]
