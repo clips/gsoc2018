@@ -206,7 +206,8 @@ def give_new_label(label, text, user):
         new_label = deletion_configuration.replacement_name
         return new_label
     elif attribute_configuration.attribute_action == 'gen':
-        pass
+        new_label = give_generalized_attribute(attribute_configuration, text)
+        return new_label
     else:
         label = give_supressed_attribute(text, attribute_configuration)
         return label
@@ -499,6 +500,12 @@ def add_regex_pattern(request, id):
         return HttpResponseRedirect('/login')
 
 
+def give_generalized_attribute(attribute_configuration, text):
+    escalation_level = 4
+    holonym = extract_part_holonym(text, escalation_level)
+    return holonym
+
+
 def extract_part_holonym(word, escalation_level):
     if escalation_level == 1:
         if isinstance(word, str):
@@ -506,7 +513,7 @@ def extract_part_holonym(word, escalation_level):
         else:
             synset_word = word
         holonyms = synset_word.part_holonyms()
-        return holonyms[0]
+        return holonyms[0].lemmas()[0].name()
     else:
         if isinstance(word, str):
             synset_word = wn.synsets(word)[0]
