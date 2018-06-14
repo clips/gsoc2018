@@ -74,3 +74,17 @@ class Regex_Pattern(models.Model):
     regular_expression = models.CharField(max_length=500)
     # Adding user for faster DB lookups
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+
+
+class Generalization_Configuration(models.Model):
+    # Linking it to the attribute
+    attribute = models.ForeignKey(
+        Attribute_Configuration, on_delete=models.CASCADE)
+    # Adding user for faster DB lookups
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    GENERALIZATION_ACTION_CHOICES = (
+        ('holonym', 'holonym'),
+        ('wordvec', 'wordvector'),
+    )
+    generalization_action = models.CharField(
+        max_length=6, choices=GENERALIZATION_ACTION_CHOICES)
