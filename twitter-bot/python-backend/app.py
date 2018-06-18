@@ -8,17 +8,21 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-@app.after_request
-def after_request(response):
-    # Add local logging later
-    pass
+# @app.after_request
+# def after_request(response):
+#     # Add local logging later
+#     pass
 
 @app.route('/analyse/topic', methods=['POST'])
 def analyse_topic():
     """ """
     json = request.get_json()
-    method = json.method
-    text = json.text
+    method = json['method']
+    text = json['text']
+
+    # Mock variable setting
+    # method = 'nmf'
+    # text = 'Sample text about president'
 
     topics = topic_analyser.analyse(method, text)
     
@@ -28,7 +32,10 @@ def analyse_topic():
 def analyse_sentiment():
     """ """
     json = request.get_json()
-    text = json.text
+    text = json['text']
+
+    # Mock variable setting
+    # text = 'Sample text about president'
 
     sentiments, probabilities = sentiment_analyser.analyse(text)
 
@@ -38,7 +45,7 @@ def analyse_sentiment():
 def paraphrase():
     """ """
     json = request.get_json()
-    text = json.text
+    text = json['text']
 
     paraphrased_pairs = paraphrasing_module.paraphrase(text)
 

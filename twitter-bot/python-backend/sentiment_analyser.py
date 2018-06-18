@@ -10,30 +10,24 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction import text 
 from sklearn import decomposition
 
-# Visualization
-from wordcloud import WordCloud 
-import matplotlib.pyplot as plt
-
-# my imports
-import sentiment_analysis
-
-def main ():
+def load_model():
     """ """
-    # Reads a JSON config from standard input to guide execution
-    stdin_config = sys.stdin.readlines()
-    # Should be whole of the JSON config
-    json_config = json.loads(stdin_config[0])
+    model = None
 
-    tweet = json_config['tweet']
-    sentiment = sentiment_analysis(tweet)
+    ###
 
-    # Standard stream is routed back to Node here so we can just use print()
-    print(sentiment)
-    sys.stdout.flush()
+    return model
 
-def sentiment_analysis():
+def analyse(text):
     """ """
-    
+    sentiment, probabilities = None
+    model = load_model()
 
-if __name__ == '__main__':
-    main()    
+    ###
+
+    # mock analysis:
+    sentiment = 'negative'
+    probabilities = '0.12345'
+
+    return sentiment, probabilities
+

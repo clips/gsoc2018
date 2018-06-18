@@ -15,6 +15,7 @@
   "author": "Alexander Rossa",
   "license": "MIT",
   "dependencies": {
+    "request": "^2.87.0",
     "twit": "^2.2.10",
     "twitter": "^1.7.1"
   }

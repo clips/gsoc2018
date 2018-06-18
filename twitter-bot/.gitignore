@@ -1,6 +1,7 @@
 *.pyc
 *.sqlite3
 */node_modules
+/node_modules
 */datasets
 things-to-discuss.md
 auth.js
