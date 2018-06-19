@@ -4,6 +4,10 @@ from django.db import models
 from django.db import models
 # Create your models here.
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
+from django.conf import settings
 
 
 class Attribute_Configuration(models.Model):
@@ -96,3 +100,9 @@ class Generalization_Configuration(models.Model):
 
     def __str__(self):
         return self.attribute_title + ' - ' + self.generalization_action
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
