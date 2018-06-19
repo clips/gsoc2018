@@ -513,7 +513,10 @@ def extract_part_holonym(word, escalation_level):
         else:
             synset_word = word
         holonyms = synset_word.part_holonyms()
-        return holonyms[0].lemmas()[0].name()
+        try:
+            return holonyms[0].lemmas()[0].name()
+        except (ValueError, IndexError):
+            return word
     else:
         if isinstance(word, str):
             synset_word = wn.synsets(word)[0]
