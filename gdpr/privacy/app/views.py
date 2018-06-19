@@ -553,11 +553,13 @@ def add_generalization_configuration(request, id):
         return HttpResponseRedirect('/login')
 
 
-def show_tokens(request):
+def api_token_management(request):
     if request.user.is_authenticated:
         user = request.user
         tokens = Token.objects.filter(user=user)
-        return HttpResponse(tokens)
+        return render(request, 'api_token_management.html', {'user': user, 'tokens': tokens})
+    else:
+        return HttpResponseRedirect('/login')
 
 
 @api_view(['POST', 'GET'])
@@ -580,3 +582,17 @@ def anonymize_text_api(request):
         return JsonResponse(response_dict)
     else:
         return HttpResponse("ERROR, ADD A HEADER TOKEN")
+
+
+def regenerate_api_token(request):
+    if request.user.is_authenticated:
+        user = request.user
+        instances = Token.objects.filter(user=user)
+        if len(instances) > 0:
+            instances[0].delete()
+            Token.objects.create(user=user)
+            return HttpResponseRedirect('/api_token_management')
+        else:
+            return HttpResponse('INVALID')
+    else:
+        return HttpResponseRedirect('/login')
