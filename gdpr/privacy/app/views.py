@@ -14,6 +14,10 @@ from .models import Attribute_Configuration, Attribute_Alias, \
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from nltk.corpus import wordnet as wn
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view
+from re import sub
+from django.http import JsonResponse
 
 
 def preprocess(text):
@@ -547,3 +551,32 @@ def add_generalization_configuration(request, id):
             return HttpResponseRedirect('/dashboard')
     else:
         return HttpResponseRedirect('/login')
+
+
+def show_tokens(request):
+    if request.user.is_authenticated:
+        user = request.user
+        tokens = Token.objects.filter(user=user)
+        return HttpResponse(tokens)
+
+
+@api_view(['POST', 'GET'])
+def anonymize_text_api(request):
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+
+        text_to_anonymize = request.POST.get('text_to_anonymize')
+        anonymized_text = regex_based_anonymization(user, text_to_anonymize)
+        anonymized_text = entity_recognition_spacy(anonymized_text, user)
+        response_dict = {'anonymized_text': anonymized_text}
+        return JsonResponse(response_dict)
+    else:
+        return HttpResponse("ERROR, ADD A HEADER TOKEN")

@@ -38,4 +38,6 @@ urlpatterns = [
         views.add_regex_pattern),
     url(r'^add_generalization_configuration/(\d+)/$',
         views.add_generalization_configuration),
+    url(r'^anonymize_text_api/$', views.anonymize_text_api),
+
 ]
