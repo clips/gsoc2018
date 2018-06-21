@@ -61,3 +61,13 @@ def obtain_idf_scores(document_text):
             score = log(1 + number_of_documents)
         idf_score_dict[token] = score
     return idf_score_dict
+
+
+def obtain_tf_scores(document_text):
+    tokens = word_tokenize(document_text)
+    regex_pattern_for_tokens = re.compile('[a-zA-Z]')
+    # List comprehension below removes non alphabet characters and stopwords
+    tokens = [token.lower() for token in tokens if token.lower()
+              not in stop_words and re.match(regex_pattern_for_tokens, token)]
+    token_counts = dict(Counter(tokens))
+    return token_counts
