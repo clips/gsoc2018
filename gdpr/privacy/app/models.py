@@ -99,7 +99,7 @@ class Generalization_Configuration(models.Model):
                 'Illegal generalization option entered')
 
     def __str__(self):
-        return self.attribute_title + ' - ' + self.generalization_action
+        return self.attribute.attribute_title + ' - ' + self.generalization_action
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
