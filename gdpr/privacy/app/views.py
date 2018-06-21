@@ -18,6 +18,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from re import sub
 from django.http import JsonResponse
+from pymagnitude import Magnitude
 
 
 def preprocess(text):
@@ -210,7 +211,8 @@ def give_new_label(label, text, user):
         new_label = deletion_configuration.replacement_name
         return new_label
     elif attribute_configuration.attribute_action == 'gen':
-        new_label = give_generalized_attribute(attribute_configuration, text)
+        new_label = give_generalized_attribute(
+            attribute_configuration, user, text)
         return new_label
     else:
         label = give_supressed_attribute(text, attribute_configuration)
@@ -504,10 +506,11 @@ def add_regex_pattern(request, id):
         return HttpResponseRedirect('/login')
 
 
-def give_generalized_attribute(attribute_configuration, text):
-    escalation_level = 4
-    holonym = extract_part_holonym(text, escalation_level)
-    return holonym
+def extract_wordvec_generalization(word, path_to_word_vectors, neighbor_number):
+    vectors = Magnitude(path_to_word_vectors)
+    generalized_attribute = vectors.most_similar(word, topn=neighbor_number)[
+        neighbor_number - 1][0]
+    return generalized_attribute
 
 
 def extract_part_holonym(word, escalation_level):
@@ -528,6 +531,21 @@ def extract_part_holonym(word, escalation_level):
             synset_word = word
         holonym = synset_word.part_holonyms()[0]
         return extract_part_holonym(holonym, escalation_level - 1)
+
+
+def give_generalized_attribute(attribute_configuration, user, text):
+    escalation_level = 4
+    path_to_word_vectors = "/home/rudresh/Documents/gsoc2018/glove.6B.100d.magnitude"
+    neighbor_number = 2
+    generalization_configuration = Generalization_Configuration.objects.get(
+        attribute=attribute_configuration)
+    if generalization_configuration.generalization_action == 'wordvec':
+        generalized_attribute = extract_wordvec_generalization(
+            text, path_to_word_vectors, neighbor_number)
+        return generalized_attribute
+    else:
+        generalized_attribute = extract_part_holonym(text, escalation_level)
+        return generalized_attribute
 
 
 def add_generalization_configuration(request, id):
