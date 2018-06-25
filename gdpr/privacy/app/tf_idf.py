@@ -51,7 +51,8 @@ def obtain_idf_scores(document_text):
     idf_score_dict = {}
     with open('tf_idf_scores/idf_counts.json', 'r') as fp:
         idf_counts_dict = json.load(fp)
-    # The current IDF scoring scheme is inverse document frequency smoothened. Can be expanded
+    # The current IDF scoring scheme is inverse document frequency smoothened.
+    # Can be expanded
     for token in tokens:
         number_of_documents = idf_counts_dict['number_of_documents']
         try:
@@ -69,5 +70,18 @@ def obtain_tf_scores(document_text):
     # List comprehension below removes non alphabet characters and stopwords
     tokens = [token.lower() for token in tokens if token.lower()
               not in stop_words and re.match(regex_pattern_for_tokens, token)]
+    size_of_document = len(tokens)
     token_counts = dict(Counter(tokens))
+    token_counts['size_of_document'] = size_of_document
     return token_counts
+
+
+def obtain_tf_idf_scores(document_text):
+    idf_scores_dict = obtain_idf_scores(document_text)
+    tf_scores_dict = obtain_tf_scores(document_text)
+    size_of_document = tf_scores_dict['size_of_document']
+    tf_idf_scores_dict = {}
+    for word in tf_scores_dict:
+        tf_scores_dict[word] = (
+            float(tf_scores_dict[word]) * float(idf_scores_dict[word])) / (size_of_document)
+    return tf_idf_scores_dict
