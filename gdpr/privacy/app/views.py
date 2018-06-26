@@ -614,3 +614,32 @@ def regenerate_api_token(request):
             return HttpResponse('INVALID')
     else:
         return HttpResponseRedirect('/login')
+
+
+def token_level_api(request):
+    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
+        " I was then hired by Google."
+    spacy_model = spacy.load('en_core_web_sm')
+    document = spacy_model(text)
+    token_response = []
+    index = 0
+    while(index < len(document)):
+        word = document[index]
+        word_text = word.text
+        if word.ent_type_:
+            if word.ent_iob_ == 'B':
+                # placeholder for the replacement function
+                replacement = 'replacement'
+                token_dict = {'token': word_text, 'is_entity': True,
+                              'entity_type': word.ent_type_, 'replacement': replacement}
+                token_response.append(token_dict)
+            else:
+                # placeholder for entitites spanning multiple locations
+                pass
+        else:
+            replacement = ''
+            token_dict = {'token': word_text, 'is_entity': False,
+                          'entity_type': word.ent_type_, 'replacement': replacement}
+            token_response.append(token_dict)
+        index += 1
+    return HttpResponse(token_response)
