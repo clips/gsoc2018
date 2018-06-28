@@ -41,6 +41,9 @@ urlpatterns = [
     url(r'^anonymize_text_api/$', views.anonymize_text_api),
     url(r'^api_token_management/$', views.api_token_management),
     url(r'^regenerate_api_token/$', views.regenerate_api_token),
+    url(r'^token_level_api/$', views.token_level_api),
+
+
 
 
 ]

@@ -616,50 +616,70 @@ def regenerate_api_token(request):
         return HttpResponseRedirect('/login')
 
 
+@api_view(['POST'])
 def token_level_api(request):
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+        text_to_anonymize = request.POST.get('text_to_anonymize')
+        spacy_model = spacy.load('en_core_web_sm')
+        document = spacy_model(text_to_anonymize)
+        token_response = []
+        index = 0
+        while(index < len(document)):
+            word = document[index]
+            word_text = word.text
+            if word.ent_type_:
+                if word.ent_iob_ == 'B':
+                    # placeholder for the replacement function
+                    entity_type = word.ent_type_
+                    replacement = give_new_label(entity_type, word_text, user)
+                    token_dict = {'token': word_text, 'is_entity': True,
+                                  'entity_type': entity_type, 'replacement': replacement}
+                    token_response.append(token_dict)
+                else:
+                    # handling multi token entities,I.E when the entity type is "I"
+                    temporary_index = index
+                    '''
+                    Acessing the first token in the entity, that is current last
+                    entry in array
+                    '''
+                    word_text = token_response[-1]['token']
+                    while(temporary_index < len(document) and document[temporary_index].ent_iob_ == 'I'):
+                        # appending all the words that are a part of that entity
+                        word_text = word_text + ' ' + \
+                            document[temporary_index].text
+                        temporary_index += 1
+                    # placeholder for the replacement function
+                    entity_type = word.ent_type_
+                    replacement = give_new_label(entity_type, word_text, user)
+                    token_dict = {'token': word_text, 'is_entity': True,
+                                  'entity_type': entity_type, 'replacement': replacement}
+                    # Deleting the beginning token entry and replacing with entire string
+                    del token_response[-1]
+                    token_response.append(token_dict)
+                    # Skipping all the  I entities covered
+                    index = temporary_index
+
+            else:
+                replacement = ''
+                token_dict = {'token': word_text, 'is_entity': False,
+                              'entity_type': word.ent_type_, 'replacement': replacement}
+                token_response.append(token_dict)
+            index += 1
+        response = {'response': token_response}
+        return JsonResponse(response)
+
+
+'''
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
-    spacy_model = spacy.load('en_core_web_sm')
-    document = spacy_model(text)
-    token_response = []
-    index = 0
-    while(index < len(document)):
-        word = document[index]
-        word_text = word.text
-        if word.ent_type_:
-            if word.ent_iob_ == 'B':
-                # placeholder for the replacement function
-                replacement = 'replacement'
-                token_dict = {'token': word_text, 'is_entity': True,
-                              'entity_type': word.ent_type_, 'replacement': replacement}
-                token_response.append(token_dict)
-            else:
-                # handling multi token entities,I.E when the entity type is "I"
-                temporary_index = index
-                '''
-                Acessing the first token in the entity, that is current last
-                entry in array
-                '''
-                word_text = token_response[-1]['token']
-                while(temporary_index < len(document) and document[temporary_index].ent_iob_ == 'I'):
-                    # appending all the words that are a part of that entity
-                    word_text = word_text + ' ' + \
-                        document[temporary_index].text
-                    temporary_index += 1
-                # placeholder for the replacement function
-                replacement = 'replacement'
-                token_dict = {'token': word_text, 'is_entity': True,
-                              'entity_type': word.ent_type_, 'replacement': replacement}
-                # Deleting the beginning token entry and replacing with entire string
-                del token_response[-1]
-                token_response.append(token_dict)
-                # Skipping all the  I entities covered
-                index = temporary_index
-
-        else:
-            replacement = ''
-            token_dict = {'token': word_text, 'is_entity': False,
-                          'entity_type': word.ent_type_, 'replacement': replacement}
-            token_response.append(token_dict)
-        index += 1
-    return HttpResponse(token_response)
+    
+'''
