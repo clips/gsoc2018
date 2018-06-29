@@ -1,0 +1,44 @@
+"I am angry about the United States of America government"
+  - Predicted as: 'government'
+
+"Governmental issues do not concern me at allThe situation with food shortage in Africa is frightening"
+  - Predicted as: 'food'
+
+"Famine is still a problem in developing countries"
+  - Predicted as: 'parliament'
+
+"We cannot ignore the threat of global warming any longer!"
+  - Predicted as: 'global warming'
+
+"The average temperature is not rising because of humans"
+  - Predicted as: 'politics'
+
+"Universities are implementing new policies"
+  - Predicted as: 'education'
+
+"The tuition fees are ridiculous!"
+  - Predicted as: 'politics'
+
+"Scientific reasearch attests to climatic changes on this planet"
+  - Predicted as: 'football'
+
+"Democracy has failed"
+  - Predicted as: 'politics'
+
+"Minarchism is my preferred approach to defining state"
+  - Predicted as: 'politics'
+
+"Being Vegetarian is about compassion"
+  - Predicted as: 'vegan'
+
+"We need more leaders in public institutions"
+  - Predicted as: 'politics'
+
+"World Cup in Russia proved that it is still a popular game"
+  - Predicted as: 'football'
+
+"Ronaldo does know how to kick a ball"
+  - Predicted as: 'football'
+
+"Ronaldo scored a great goal"
+  - Predicted as: 'politics'
