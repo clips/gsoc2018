@@ -14,7 +14,7 @@ def generate_idf_counts(user_id, document_text):
     Saves the document and wordcount to the knowledgebase
     '''
     if not os.path.exists('tf_idf_scores'):
-        os.makedir('tf_idf_scores')
+        os.makedirs('tf_idf_scores')
 
     tokens = word_tokenize(document_text)
     regex_pattern_for_tokens = re.compile('[a-zA-Z]')
@@ -42,7 +42,7 @@ def generate_idf_counts(user_id, document_text):
         except KeyError:
             idf_counts_dict[token] = 1
     # Update the idf_counts file
-    with open('tf_idf_scores/idf_counts.json', 'w') as fp:
+    with open(file_path, 'w') as fp:
         json.dump(idf_counts_dict, fp)
 
 
