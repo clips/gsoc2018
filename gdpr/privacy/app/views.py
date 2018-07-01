@@ -646,7 +646,8 @@ def token_level_api(request):
                                   'entity_type': entity_type, 'replacement': replacement}
                     token_response.append(token_dict)
                 else:
-                    # handling multi token entities,I.E when the entity type is "I"
+                    # handling multi token entities,I.E when the entity type is
+                    # "I"
                     temporary_index = index
                     '''
                     Acessing the first token in the entity, that is current last
@@ -654,7 +655,8 @@ def token_level_api(request):
                     '''
                     word_text = token_response[-1]['token']
                     while(temporary_index < len(document) and document[temporary_index].ent_iob_ == 'I'):
-                        # appending all the words that are a part of that entity
+                        # appending all the words that are a part of that
+                        # entity
                         word_text = word_text + ' ' + \
                             document[temporary_index].text
                         temporary_index += 1
@@ -663,7 +665,8 @@ def token_level_api(request):
                     replacement = give_new_label(entity_type, word_text, user)
                     token_dict = {'token': word_text, 'is_entity': True,
                                   'entity_type': entity_type, 'replacement': replacement}
-                    # Deleting the beginning token entry and replacing with entire string
+                    # Deleting the beginning token entry and replacing with
+                    # entire string
                     del token_response[-1]
                     token_response.append(token_dict)
                     # Skipping all the  I entities covered
@@ -688,7 +691,7 @@ def add_document_to_knowledgebase(request):
             document_text = request.POST.get('document_text')
             print(document_text)
             tf_idf.generate_idf_counts(user_id, document_text)
-            return render(request, 'add_document_to_knowledgebase.html', {'success':True})
+            return render(request, 'add_document_to_knowledgebase.html', {'success': True})
         else:
             return render(request, 'add_document_to_knowledgebase.html')
     else:
