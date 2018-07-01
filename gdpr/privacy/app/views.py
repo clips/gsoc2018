@@ -19,6 +19,7 @@ from rest_framework.decorators import api_view
 from re import sub
 from django.http import JsonResponse
 from pymagnitude import Magnitude
+from . import tf_idf
 
 
 def preprocess(text):
@@ -676,6 +677,22 @@ def token_level_api(request):
             index += 1
         response = {'response': token_response}
         return JsonResponse(response)
+
+
+def add_document_to_knowledgebase(request):
+    ''' Wrapper to add documents to the TF-IDF knowledgebase '''
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST':
+            document_text = request.POST.get('document_text')
+            print(document_text)
+            tf_idf.generate_idf_counts(user_id, document_text)
+            return render(request, 'add_document_to_knowledgebase.html', {'success':True})
+        else:
+            return render(request, 'add_document_to_knowledgebase.html')
+    else:
+        return HttpResponseRedirect('/login')
 
 
 '''

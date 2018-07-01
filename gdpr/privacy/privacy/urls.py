@@ -42,6 +42,9 @@ urlpatterns = [
     url(r'^api_token_management/$', views.api_token_management),
     url(r'^regenerate_api_token/$', views.regenerate_api_token),
     url(r'^token_level_api/$', views.token_level_api),
+    url(r'^add_document_to_knowledgebase/$',
+        views.add_document_to_knowledgebase),
+
 
 
 
