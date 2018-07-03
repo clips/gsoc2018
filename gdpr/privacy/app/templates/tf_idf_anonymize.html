@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-md-10" style="margin: 0 auto;">
+  <div class="card">
+      <div class="card-header">
+          <strong class="card-title">Anonymize Text</strong>
+      </div>
+      <div class="card-body">
+        <div id="pay-invoice">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3 class="text-center">Enter text here</h3>
+                </div>
+                <hr>
+                <form action="/tf_idf_anonymize/" method="post">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                            <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Text to Anonymize</label></div>
+                            <div class="col-12 col-md-9"><textarea name="text_to_anonymize" id="textarea-input" rows="9" placeholder="Enter the Text here" class="form-control"required>{{text_to_anonymize}}</textarea></div>  
+                    </div>
+                  <div class="form-group">
+                  <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                      <span id="payment-button-amount">Submit</span>
+                  </button>
+                  </div>
+                </form>
+            </div>
+            {% if show_output %}
+            <div class="card-body">
+                <div class="card-title">
+                    <h3 class="text-center" style="color:red;">Anonymized Text (TF-IDF SCORE THRESHOLD USED :{{threshold}}) </h3>
+                </div>
+                <hr>
+                <h6>{{anonymized_text}}</h6>
+            </div>
+            {% endif %}
+        </div>
+
+      </div>
+  </div> <!-- .card -->
+
+</div><!--/.col-->
+</div>
+{% endblock %}

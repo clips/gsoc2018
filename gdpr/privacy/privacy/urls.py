@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^token_level_api/$', views.token_level_api),
     url(r'^add_document_to_knowledgebase/$',
         views.add_document_to_knowledgebase),
+    url(r'^tf_idf_anonymize/$', views.tf_idf_anonymize),
 
 
 

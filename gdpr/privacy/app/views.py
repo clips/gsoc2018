@@ -20,6 +20,7 @@ from re import sub
 from django.http import JsonResponse
 from pymagnitude import Magnitude
 from . import tf_idf
+from json import dumps
 
 
 def preprocess(text):
@@ -351,12 +352,14 @@ def add_suppression_configuration(request, id):
                 supression_configuration, exists = Supression_Configuration.objects.get_or_create(
                     attribute=attribute)
                 if request.POST.get('suppress_number'):
-                    #suppress_number = int(request.POST.get('suppress_number').strip())
+                    # suppress_number =
+                    # int(request.POST.get('suppress_number').strip())
                     supression_configuration.suppress_number = int(request.POST.get(
                         'suppress_number'))
                     supression_configuration.suppress_percent = None
                 if request.POST.get('suppress_percent'):
-                    #suppress_percent = int(request.POST.get('suppress_percent').strip())
+                    # suppress_percent =
+                    # int(request.POST.get('suppress_percent').strip())
                     supression_configuration.suppress_percent = int(request.POST.get(
                         'suppress_percent'))
                     supression_configuration.suppress_number = None
@@ -698,8 +701,32 @@ def add_document_to_knowledgebase(request):
         return HttpResponseRedirect('/login')
 
 
+def tf_idf_anonymize(request):
+    ''' Trial function with seperate template. Template to be merged later '''
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            text_to_anonymize = request.POST.get('text_to_anonymize')
+            anonymized_text = text_to_anonymize
+            tf_idf_scores = tf_idf.obtain_tf_idf_scores(
+                user.id, text_to_anonymize)
+            # Threshold is currently hardcoded. Change it to dynamic generation
+            # or DB read
+            threshold = 0.4
+            for token in tf_idf_scores:
+                if tf_idf_scores[token] > threshold:
+                    anonymized_text = re.sub(
+                        token, 'REDACTED', anonymized_text, flags=re.I)
+            return render(request, 'tf_idf_anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize, 'threshold': threshold})
+        else:
+            return render(request, 'tf_idf_anonymize.html')
+
+    else:
+        return HttpResponseRedirect('/login')
+
+
 '''
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
-    
+
 '''
