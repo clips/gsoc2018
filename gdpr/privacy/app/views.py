@@ -204,7 +204,7 @@ def give_new_label(label, text, user):
         alias = Attribute_Alias.objects.get(alias=label, user=user)
     except Attribute_Alias.DoesNotExist:
         # return and terminate function if it does not exist
-        return label
+        return text
     attribute_configuration = alias.attribute
     if attribute_configuration.attribute_action == 'del':
         deletion_configuration = Deletion_Configuration.objects.get(
