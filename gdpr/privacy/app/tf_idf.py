@@ -79,8 +79,7 @@ def obtain_tf_scores(document_text):
               not in stop_words and re.match(regex_pattern_for_tokens, token)]
     size_of_document = len(tokens)
     token_counts = dict(Counter(tokens))
-    token_counts['size_of_document'] = size_of_document
-    return token_counts
+    return (size_of_document, token_counts)
 
 
 def obtain_tf_idf_scores(user_id, document_text):
@@ -88,10 +87,11 @@ def obtain_tf_idf_scores(user_id, document_text):
     Obtains the tf_idf scores tokenwise as a dictionary
     '''
     idf_scores_dict = obtain_idf_scores(user_id, document_text)
-    tf_scores_dict = obtain_tf_scores(document_text)
-    size_of_document = tf_scores_dict['size_of_document']
+    tf_scores_result = obtain_tf_scores(document_text)
+    tf_scores_dict = tf_scores_result[1]
+    size_of_document = tf_scores_result[0]
     tf_idf_scores_dict = {}
     for word in tf_scores_dict:
-        tf_scores_dict[word] = (
+        tf_idf_scores_dict[word] = (
             float(tf_scores_dict[word]) * float(idf_scores_dict[word])) / (size_of_document)
     return tf_idf_scores_dict
