@@ -1,12 +1,20 @@
 import os
 from collections import Counter
-from nltk.tokenize import word_tokenize
+#from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import re
 import json
 from math import log
 stop_words = set(stopwords.words('english'))
+import spacy
 # set(stopwords.words('english'))
+
+
+def tokenizer_wrapper(text_to_tokenize):
+    nlp = spacy.load('en_core_web_sm')
+    doc = nlp(text_to_tokenize)
+    tokens = [token.text for token in doc]
+    return tokens
 
 
 def generate_idf_counts(user_id, document_text):
@@ -16,7 +24,7 @@ def generate_idf_counts(user_id, document_text):
     if not os.path.exists('tf_idf_scores'):
         os.makedirs('tf_idf_scores')
 
-    tokens = word_tokenize(document_text)
+    tokens = tokenizer_wrapper(document_text)
     regex_pattern_for_tokens = re.compile('[a-zA-Z]')
     # List comprehension below removes non alphabet characters and stopwords
     tokens = [token.lower() for token in tokens if token.lower()
@@ -47,7 +55,7 @@ def generate_idf_counts(user_id, document_text):
 
 
 def obtain_idf_scores(user_id, document_text):
-    tokens = word_tokenize(document_text)
+    tokens = tokenizer_wrapper(document_text)
     regex_pattern_for_tokens = re.compile('[a-zA-Z]')
     # List comprehension below removes non alphabet characters and stopwords
     tokens = [token.lower() for token in tokens if token.lower()
@@ -72,7 +80,7 @@ def obtain_idf_scores(user_id, document_text):
 
 
 def obtain_tf_scores(document_text):
-    tokens = word_tokenize(document_text)
+    tokens = tokenizer_wrapper(document_text)
     regex_pattern_for_tokens = re.compile('[a-zA-Z]')
     # List comprehension below removes non alphabet characters and stopwords
     tokens = [token.lower() for token in tokens if token.lower()
