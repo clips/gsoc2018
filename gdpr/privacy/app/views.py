@@ -21,6 +21,8 @@ from django.http import JsonResponse
 from pymagnitude import Magnitude
 from . import tf_idf
 from json import dumps
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english'))
 
 
 def preprocess(text):
@@ -687,6 +689,9 @@ def token_level_api(request):
             return HttpResponse('INVALID TOKEN')
         text_to_anonymize = request.POST.get('text_to_anonymize')
         response = token_level_anon(text_to_anonymize, user)
+        # Passing to TF-IDF BASED RARE TOKEN DETECTION
+        threshold = 0.4
+        response = token_level_tf_idf_anonymize(response, user, threshold)
         return JsonResponse(response)
 
 
@@ -730,7 +735,38 @@ def tf_idf_anonymize(request):
         return HttpResponseRedirect('/login')
 
 
-def token_level_tf_idf_ananon(response_dict):
+def token_level_tf_idf_anonymize(response_dict, user, threshold):
+    ''' Function takes the response dict from NER anonymization and applies TF-IDF detection and anonymizatio'''
+    text_to_anonymize = response_dict['original_text']
+    tf_idf_scores = tf_idf.obtain_tf_idf_scores(
+        user.id, text_to_anonymize)
+    response = response_dict['response']
+    for index, entry in enumerate(response):
+        # Currently, when a token is an entity but no intent for it to be
+        # anonymized, the replacement is set equal to the token.
+        # Thus comparing the token with the replacement is the only way to
+        # check if it has already been assigned a replacement
+        if not entry['is_entity'] and entry['token'] != entry['replacement']:
+            try:
+                if tf_idf_scores[entry['token'].lower()] < threshold:
+                    response_dict['response'][index][
+                        'replacement'] = 'REDACTED'
+                    print(entry['token'] + '   ' +
+                          str(tf_idf_scores[entry['token'].lower()]))
+            except KeyError:
+                # When the token is non existant in TF_IDF, assumed to be rare
+                #print('KEY ERROR ' + entry['token'])
+                if entry['token'] not in stop_words:
+                    # except when token is a stop_word
+                    response_dict['response'][index][
+                        'replacement'] = 'REDACTED'
+    return response_dict
+    # TO-DO in this function:
+    # 1) Optimize the function, the stopwords can simply be not removed from TF-IDF
+    # 2) Change response tructure to indicate kind of anon
+    # 3)Different scores, check func.
+
+
 '''
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
