@@ -669,7 +669,7 @@ def token_level_anon(text_to_anonymize, user):
                           'entity_type': word.ent_type_, 'replacement': replacement}
             token_response.append(token_dict)
         index += 1
-    response = {'response': token_response}
+    response = {'response': token_response, 'original_text': text_to_anonymize}
     return response
 
 
@@ -730,6 +730,7 @@ def tf_idf_anonymize(request):
         return HttpResponseRedirect('/login')
 
 
+def token_level_tf_idf_ananon(response_dict):
 '''
     text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
         " I was then hired by Google."
