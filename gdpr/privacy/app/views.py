@@ -640,9 +640,11 @@ def token_level_anon(text_to_anonymize, user):
             if word.ent_iob_ == 'B':
                 # placeholder for the replacement function
                 entity_type = word.ent_type_
-                replacement = give_new_label(entity_type, word_text, user)
+                replacement_dict = give_new_label(entity_type, word_text, user)
+                replacement = replacement_dict['new_label']
+                is_replaced = replacement_dict['has_new_label']
                 token_dict = {'token': word_text, 'is_entity': True,
-                              'entity_type': entity_type, 'replacement': replacement}
+                              'entity_type': entity_type, 'replacement': replacement, 'is_replaced': is_replaced}
                 token_response.append(token_dict)
             else:
                 # handling multi token entities,I.E when the entity type is
@@ -661,9 +663,11 @@ def token_level_anon(text_to_anonymize, user):
                     temporary_index += 1
                 # placeholder for the replacement function
                 entity_type = word.ent_type_
-                replacement = give_new_label(entity_type, word_text, user)
+                replacement_dict = give_new_label(entity_type, word_text, user)
+                replacement = replacement_dict['new_label']
+                is_replaced = replacement_dict['has_new_label']
                 token_dict = {'token': word_text, 'is_entity': True,
-                              'entity_type': entity_type, 'replacement': replacement}
+                              'entity_type': entity_type, 'replacement': replacement, 'is_replaced': is_replaced}
                 # Deleting the beginning token entry and replacing with
                 # entire string
                 del token_response[-1]
@@ -674,7 +678,7 @@ def token_level_anon(text_to_anonymize, user):
         else:
             replacement = ''
             token_dict = {'token': word_text, 'is_entity': False,
-                          'entity_type': word.ent_type_, 'replacement': replacement}
+                          'entity_type': word.ent_type_, 'replacement': replacement, 'is_replaced': False}
             token_response.append(token_dict)
         index += 1
     response = {'response': token_response, 'original_text': text_to_anonymize}
@@ -697,7 +701,7 @@ def token_level_api(request):
         response = token_level_anon(text_to_anonymize, user)
         # Passing to TF-IDF BASED RARE TOKEN DETECTION
         threshold = 0.4
-        response = token_level_tf_idf_anonymize(response, user, threshold)
+        #response = token_level_tf_idf_anonymize(response, user, threshold)
         return JsonResponse(response)
 
 
