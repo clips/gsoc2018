@@ -106,3 +106,9 @@ class Generalization_Configuration(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class TF_IDF_configuration(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    threshhold = models.IntegerField()
+    replacement = models.CharField(max_length=20)
