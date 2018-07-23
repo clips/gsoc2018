@@ -10,7 +10,7 @@ import math
 from pathlib import Path
 from .models import Attribute_Configuration, Attribute_Alias, \
     Supression_Configuration, Deletion_Configuration, \
-    Regex_Pattern, Generalization_Configuration
+    Regex_Pattern, Generalization_Configuration, TF_IDF_configuration
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from nltk.corpus import wordnet as wn
@@ -701,7 +701,7 @@ def token_level_api(request):
         response = token_level_anon(text_to_anonymize, user)
         # Passing to TF-IDF BASED RARE TOKEN DETECTION
         threshold = 0.4
-        #response = token_level_tf_idf_anonymize(response, user, threshold)
+        response = token_level_tf_idf_anonymize(response, user, threshold)
         return JsonResponse(response)
 
 
@@ -750,26 +750,29 @@ def token_level_tf_idf_anonymize(response_dict, user, threshold):
     text_to_anonymize = response_dict['original_text']
     tf_idf_scores = tf_idf.obtain_tf_idf_scores(
         user.id, text_to_anonymize)
+    print(tf_idf_scores)
     response = response_dict['response']
+    try:
+        tf_idf_configuration = TF_IDF_configuration.objects.get(user=user)
+        replacement = tf_idf_configuration.replacement
+        threshold = tf_idf_configuration.threshold
+    except TF_IDF_configuration.DoesNotExist:
+        # In case the configuration does not exist, revert to default values
+        replacement = 'REDACTED'
+        threshold = 0.4
     for index, entry in enumerate(response):
-        # Currently, when a token is an entity but no intent for it to be
-        # anonymized, the replacement is set equal to the token.
-        # Thus comparing the token with the replacement is the only way to
-        # check if it has already been assigned a replacement
-        if not entry['is_entity'] and entry['token'] != entry['replacement']:
+        # Checking if the token has been assigned a replacement
+        if not entry['is_replaced']:
             try:
                 if tf_idf_scores[entry['token'].lower()] < threshold:
                     response_dict['response'][index][
-                        'replacement'] = 'REDACTED'
-                    print(entry['token'] + '   ' +
-                          str(tf_idf_scores[entry['token'].lower()]))
+                        'replacement'] = replacement
             except KeyError:
                 # When the token is non existant in TF_IDF, assumed to be rare
-                #print('KEY ERROR ' + entry['token'])
                 if entry['token'] not in stop_words:
                     # except when token is a stop_word
                     response_dict['response'][index][
-                        'replacement'] = 'REDACTED'
+                        'replacement'] = replacement
     return response_dict
     # TO-DO in this function:
     # 1) Optimize the function, the stopwords can simply be not removed from TF-IDF
