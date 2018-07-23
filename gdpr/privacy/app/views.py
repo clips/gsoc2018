@@ -202,25 +202,31 @@ def entity_recognition_spacy(text, user):
 
 def give_new_label(label, text, user):
     ''' When given the entity label and the actual entity text, returns the replacement entity '''
+    new_label_dict = {}
+    new_label = ''
     try:
         # Checking for the alias in the DB
         alias = Attribute_Alias.objects.get(alias=label, user=user)
     except Attribute_Alias.DoesNotExist:
         # return and terminate function if it does not exist
-        return text
+        new_label_dict['has_new_label'] = False
+        new_label_dict['new_label'] = text
+        return new_label_dict
     attribute_configuration = alias.attribute
     if attribute_configuration.attribute_action == 'del':
         deletion_configuration = Deletion_Configuration.objects.get(
             attribute=attribute_configuration)
         new_label = deletion_configuration.replacement_name
-        return new_label
     elif attribute_configuration.attribute_action == 'gen':
         new_label = give_generalized_attribute(
             attribute_configuration, user, text)
-        return new_label
     else:
-        label = give_supressed_attribute(text, attribute_configuration)
-        return label
+        new_label = give_supressed_attribute(text, attribute_configuration)
+    # If an alias for the attribute is found, add it to the new_label_dict and
+    # return
+    new_label_dict['new_label'] = new_label
+    new_label_dict['has_new_label'] = True
+    return new_label_dict
 
 
 def give_supressed_attribute(text, attribute_configuration):
