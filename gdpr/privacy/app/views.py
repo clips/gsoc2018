@@ -764,7 +764,7 @@ def token_level_tf_idf_anonymize(response_dict, user, threshold):
         # Checking if the token has been assigned a replacement
         if not entry['is_replaced']:
             try:
-                if tf_idf_scores[entry['token'].lower()] < threshold:
+                if tf_idf_scores[entry['token'].lower()] > threshold:
                     response_dict['response'][index][
                         'replacement'] = replacement
             except KeyError:
