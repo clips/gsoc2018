@@ -45,10 +45,9 @@ urlpatterns = [
     url(r'^add_document_to_knowledgebase/$',
         views.add_document_to_knowledgebase),
     url(r'^tf_idf_anonymize/$', views.tf_idf_anonymize),
-    url(r'^upload_file_to_knowledgebase/$', views.upload_file_to_knowledgebase),
-
-
-
-
+    url(r'^upload_file_to_knowledgebase/$',
+        views.upload_file_to_knowledgebase),
+    url(r'^upload_file_to_knowledgebase_api/$',
+        views.upload_file_to_knowledgebase_api),
 
 ]

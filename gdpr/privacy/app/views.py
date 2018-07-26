@@ -750,3 +750,28 @@ def upload_file_to_knowledgebase(request):
         return render(request, 'upload_file_to_knowledgebase.html')
     else:
         return HttpResponseRedirect('/login')
+
+
+@api_view(['POST'])
+def upload_file_to_knowledgebase_api(request):
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+            user_id = user.id
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+
+        myfile = request.FILES['file_to_upload']
+        file_text_lines = [line.decode('utf8').strip()
+                           for line in myfile.readlines(
+        )]
+        file_text = ' '.join(file_text_lines)
+        tf_idf.generate_idf_counts(user_id, file_text)
+        return JsonResponse({'upload_status': 'uploaded succesfully'}, status=200)
+    else:
+        return HttpResponse("ERROR, ADD A HEADER TOKEN")
