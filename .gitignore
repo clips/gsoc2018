@@ -6,3 +6,4 @@ gdpr/privacy/app/migrations/
 .sass-cache
 /.sass-cache
 tf_idf_scores/
+gdpr/privacy/media/
