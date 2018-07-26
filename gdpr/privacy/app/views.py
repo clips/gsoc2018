@@ -659,10 +659,14 @@ def token_level_api(request):
         except Token.DoesNotExist:
             return HttpResponse('INVALID TOKEN')
         text_to_anonymize = request.POST.get('text_to_anonymize')
+        # This is NER based detection and anonymization
         response = token_level_anon(text_to_anonymize, user)
-        # Passing to TF-IDF BASED RARE TOKEN DETECTION
-        threshold = 0.4
-        #response = token_level_tf_idf_anonymize(response, user, threshold)
+        # If the user has set the flag for TF-IDF anonymization, only then will
+        # it take place
+        if 'tfidf_anonymize' in request.POST:
+            if request.POST.get('tfidf_anonymize') == 'True' or request.POST.get('tfidf_anonymize') == 'true':
+                # Passing to TF-IDF BASED RARE TOKEN DETECTION
+                response = token_level_tf_idf_anonymize(response, user)
         return JsonResponse(response)
 
 
@@ -705,7 +709,7 @@ def tf_idf_anonymize(request):
         return HttpResponseRedirect('/login')
 
 
-def token_level_tf_idf_anonymize(response_dict, user, threshold):
+def token_level_tf_idf_anonymize(response_dict, user):
     ''' Function takes the response dict from NER anonymization and applies TF-IDF detection and anonymizatio'''
     text_to_anonymize = response_dict['original_text']
     tf_idf_scores = tf_idf.obtain_tf_idf_scores(
