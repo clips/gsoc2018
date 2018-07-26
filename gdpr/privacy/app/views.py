@@ -254,45 +254,6 @@ def give_supressed_attribute(text, attribute_configuration):
         return new_text
 
 
-if __name__ == "__main__":
-    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    base_path = str(Path(base_path).parents[0])
-    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
-        " I was then hired by Google."
-    '''
-    # Stanford experiment
-    preprocessed_text = preprocess(text)
-    print(preprocessed_text)
-    for sentence in preprocessed_text:
-        print(entity_recognition_stanford(sentence, base_path))
-    '''
-    # Spacy Experiment
-    preprocessed_text = preprocess(text)
-    sentences = [' '.join(word) for word in preprocessed_text]
-    text = '. '.join(sentences)
-    print(entity_recognition_spacy(text))
-
-
-def main():
-    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    base_path = str(Path(base_path).parents[0])
-    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
-        " I was then hired by Google."
-    '''
-    # Stanford experiment
-    preprocessed_text = preprocess(text)
-    print(preprocessed_text)
-    for sentence in preprocessed_text:
-        print(entity_recognition_stanford(sentence, base_path))
-    '''
-    # Spacy Experiment
-    preprocessed_text = preprocess(text)
-    sentences = [' '.join(word) for word in preprocessed_text]
-    text = '. '.join(sentences)
-    print('OLD TEXT : ' + text)
-    print('NEW TEXT : ' + entity_recognition_spacy(text))
-
-
 def register_user(request):
     if request.method == 'POST':
         username = request.POST.get('email')
@@ -775,10 +736,6 @@ def token_level_tf_idf_anonymize(response_dict, user, threshold):
                     response_dict['response'][index][
                         'replacement'] = replacement
     return response_dict
-    # TO-DO in this function:
-    # 1) Optimize the function, the stopwords can simply be not removed from TF-IDF
-    # 2) Change response tructure to indicate kind of anon
-    # 3)Different scores, check func.
 
 
 def upload_file_to_knowledgebase(request):
@@ -796,10 +753,3 @@ def upload_file_to_knowledgebase(request):
         return render(request, 'upload_file_to_knowledgebase.html')
     else:
         return HttpResponseRedirect('/login')
-
-
-'''
-    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
-        " I was then hired by Google."
-
-'''
