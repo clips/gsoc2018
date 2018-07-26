@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-md-10" style="margin: 0 auto;">
+  <div class="card">
+      <div class="card-header">
+          <strong class="card-title">Add file to knowledgebase</strong>
+      </div>
+      <div class="card-body">
+        <div id="pay-invoice">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3 class="text-center">Upload file here</h3>
+                </div>
+                <hr>
+                <form action="/upload_file_to_knowledgebase/" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                            <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Upload file to Knowledgebase</label></div>
+                            <div class="col-12 col-md-9">
+                            
+                                <input type="file" name="myfile" required>
+                            
+                            </div>  
+                    </div>
+                  <div class="form-group">
+                  <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                      <span id="payment-button-amount">Submit</span>
+                  </button>
+                  </div>
+                </form>
+            </div>
+            {% if success %}
+            <div class="card-body">
+                <div class="card-title">
+                    <h3 class="text-center" style="color:red;">Document Uploaded and Added successfully!</h3>
+                </div>
+                <hr>
+            </div>
+            {% endif %}
+        </div>
+
+      </div>
+  </div> <!-- .card -->
+
+</div><!--/.col-->
+</div>
+{% endblock %}

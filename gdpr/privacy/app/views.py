@@ -22,6 +22,8 @@ from pymagnitude import Magnitude
 from . import tf_idf
 from json import dumps
 from nltk.corpus import stopwords
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 stop_words = set(stopwords.words('english'))
 
 
@@ -701,7 +703,7 @@ def token_level_api(request):
         response = token_level_anon(text_to_anonymize, user)
         # Passing to TF-IDF BASED RARE TOKEN DETECTION
         threshold = 0.4
-        response = token_level_tf_idf_anonymize(response, user, threshold)
+        #response = token_level_tf_idf_anonymize(response, user, threshold)
         return JsonResponse(response)
 
 
@@ -712,7 +714,6 @@ def add_document_to_knowledgebase(request):
         user_id = user.id
         if request.method == 'POST':
             document_text = request.POST.get('document_text')
-            print(document_text)
             tf_idf.generate_idf_counts(user_id, document_text)
             return render(request, 'add_document_to_knowledgebase.html', {'success': True})
         else:
@@ -778,6 +779,23 @@ def token_level_tf_idf_anonymize(response_dict, user, threshold):
     # 1) Optimize the function, the stopwords can simply be not removed from TF-IDF
     # 2) Change response tructure to indicate kind of anon
     # 3)Different scores, check func.
+
+
+def upload_file_to_knowledgebase(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST' and request.FILES['myfile']:
+            myfile = request.FILES['myfile']
+            file_text_lines = [line.decode('utf8').strip()
+                               for line in myfile.readlines(
+            )]
+            file_text = ' '.join(file_text_lines)
+            tf_idf.generate_idf_counts(user_id, file_text)
+            return render(request, 'upload_file_to_knowledgebase.html')
+        return render(request, 'upload_file_to_knowledgebase.html')
+    else:
+        return HttpResponseRedirect('/login')
 
 
 '''
