@@ -315,9 +315,7 @@ def add_suppression_configuration(request, id):
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
             id=id, user=user, attribute_action='supp')
-        print('PASSSSSS pehle')
         if len(attribute_configuration) > 0:
-            print('PASSSSSS')
             attribute = attribute_configuration[0]
             if request.method == 'POST':
                 supression_configuration, exists = Supression_Configuration.objects.get_or_create(
@@ -712,7 +710,6 @@ def token_level_tf_idf_anonymize(response_dict, user, threshold):
     text_to_anonymize = response_dict['original_text']
     tf_idf_scores = tf_idf.obtain_tf_idf_scores(
         user.id, text_to_anonymize)
-    print(tf_idf_scores)
     response = response_dict['response']
     try:
         tf_idf_configuration = TF_IDF_configuration.objects.get(user=user)
