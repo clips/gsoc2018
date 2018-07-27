@@ -49,5 +49,7 @@ urlpatterns = [
         views.upload_file_to_knowledgebase),
     url(r'^upload_file_to_knowledgebase_api/$',
         views.upload_file_to_knowledgebase_api),
+    url(r'^anonymize_uploaded_file_api/$',
+        views.anonymize_uploaded_file_api),
 
 ]

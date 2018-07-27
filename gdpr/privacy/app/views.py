@@ -779,3 +779,27 @@ def upload_file_to_knowledgebase_api(request):
         return JsonResponse({'upload_status': 'uploaded succesfully'}, status=200)
     else:
         return HttpResponse("ERROR, ADD A HEADER TOKEN")
+
+
+def anonymize_uploaded_file_api(request):
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+            user_id = user.id
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+
+        myfile = request.FILES['file_to_anonymize']
+        file_text_lines = [line.decode('utf8').strip()
+                           for line in myfile.readlines(
+        )]
+        file_text = ' '.join(file_text_lines)
+        response = token_level_anon(file_text, user)
+        return JsonResponse(response)
+    else:
+        return HttpResponse("ERROR, ADD A HEADER TOKEN")
