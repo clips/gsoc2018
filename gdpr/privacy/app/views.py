@@ -800,6 +800,12 @@ def anonymize_uploaded_file_api(request):
         )]
         file_text = ' '.join(file_text_lines)
         response = token_level_anon(file_text, user)
+        # If the user has set the flag for TF-IDF anonymization, only then will
+        # it take place
+        if 'tfidf_anonymize' in request.POST:
+            if request.POST.get('tfidf_anonymize') == 'True' or request.POST.get('tfidf_anonymize') == 'true':
+                # Passing to TF-IDF BASED RARE TOKEN DETECTION
+                response = token_level_tf_idf_anonymize(response, user)
         return JsonResponse(response)
     else:
         return HttpResponse("ERROR, ADD A HEADER TOKEN")
