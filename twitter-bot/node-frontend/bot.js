@@ -1,13 +1,40 @@
 // const Seed = require('seed-text');
 // const spawn = require('child_process').spawn;
-const request = require('request')
-const Twit = require('twit')
+const request = require('request');
+const Twit = require('twit');
+const seedtext = require('seedtext');
 //Getting twitter configuration from auth.js file
-const auth = require('./auth.js')
+const auth = require('./auth.js');
 // Twitter Bot object to connect to Twitter API
 const T = new Twit(auth);
 
 const localhost = 'http://127.0.0.1:5000/'
+
+
+// Testing usage of seedtext module
+const fs = require('fs');
+
+// reading in a seed sketch file
+function loadSketch(path) {
+    var loadedSketch = fs.readFileSync(path, 'utf-8');
+    return loadedSketch;
+}; 
+
+async function generate(seedSketch, loadSketch, callback) {
+    const pb = await seedtext.parsePhraseBook(seedSketch, loadSketch);
+    const generatedString = await seedtext.generateString(pb, 'root', {});
+    callback(generatedString);
+}
+
+seedSketch = loadSketch('testSeedSketch.txt');   
+seedtextresult = ''
+generate(seedSketch, loadSketch, (result) => {
+    console.log(result);
+});
+
+// seedtext.generate()
+// console.log(seedtextresult);
+
 
 var stream = T.stream('statuses/filter', { track: ['#DeescalationBot']});
 var tweetToAnalyse = 'This is a sample angry tweet about president';

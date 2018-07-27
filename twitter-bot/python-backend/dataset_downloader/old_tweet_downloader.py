@@ -15,7 +15,7 @@ def download_and_store_tweets(n, topics, result_type = 'mixed',
     # Get n tweets from Twitter for each topic
     raw_tweets = []
     for topic in topics:
-        downloaded_tweets = download_tweets(topic, n, result_type = 'mixed')
+        downloaded_tweets = download_tweets(topic, n, result_type)
         for tweet in downloaded_tweets:
             tweet['topic'] = topic
             

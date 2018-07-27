@@ -5,4 +5,11 @@
 */datasets
 things-to-discuss.md
 auth.js
-*/auth.js
+**/auth.js
+**/auth.py
+*.csv
+*.h5
+*.pickle
+grasp.py
+*/obsolete_classifiers
+*.job
