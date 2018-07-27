@@ -781,6 +781,7 @@ def upload_file_to_knowledgebase_api(request):
         return HttpResponse("ERROR, ADD A HEADER TOKEN")
 
 
+@api_view(['POST'])
 def anonymize_uploaded_file_api(request):
     header_token = request.META.get('HTTP_AUTHORIZATION', None)
     if header_token is not None:
@@ -809,3 +810,23 @@ def anonymize_uploaded_file_api(request):
         return JsonResponse(response)
     else:
         return HttpResponse("ERROR, ADD A HEADER TOKEN")
+
+
+def anonymize_uploaded_file_gui(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST':
+            myfile = request.FILES['myfile']
+            file_text_lines = [line.decode('utf8').strip()
+                               for line in myfile.readlines(
+            )]
+            file_text = ' '.join(file_text_lines)
+            anonymized_text = regex_based_anonymization(
+                user, file_text)
+            anonymized_text = entity_recognition_spacy(anonymized_text, user)
+            return render(request, 'anonymize_uploaded_file_gui.html', {'success': True, 'anonymized_text': anonymized_text})
+        else:
+            return render(request, 'anonymize_uploaded_file_gui.html')
+    else:
+        return HttpResponseRedirect('/login')
