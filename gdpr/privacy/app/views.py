@@ -830,3 +830,26 @@ def anonymize_uploaded_file_gui(request):
             return render(request, 'anonymize_uploaded_file_gui.html')
     else:
         return HttpResponseRedirect('/login')
+
+
+def reset_setup_application(request):
+    ''' Resets all attribute configurations and applies defaults'''
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST':
+            if request.POST.get('setup') == 'YES':
+                # Drops almost all the models because of cascade settings
+                Attribute_Configuration.objects.all().delete()
+                attribute_configuration = Attribute_Configuration.objects.create(
+                    attribute_title='Location', attribute_action='gen', user=user)
+                attribute_configuration.save()
+                attribute_alias = Attribute_Alias.objects.create(
+                    user=user, alias='GPE', attribute=Attribute_Configurationr)
+                attribute_alias.save()
+                generalization_configuration = Generalization_Configuration.objects.create(
+                    generalization_action='holonym', attribute=attribute_configuration, user=user)
+                generalization_configuration.save()
+
+    else:
+        return HttpResponseRedirect('/login')
