@@ -507,7 +507,7 @@ def extract_part_holonym(word, escalation_level):
 
 
 def give_generalized_attribute(attribute_configuration, user, text):
-    escalation_level = 4
+    escalation_level = 2
     path_to_word_vectors = "/home/rudresh/Documents/gsoc2018/glove.6B.100d.magnitude"
     neighbor_number = 2
     generalization_configuration = Generalization_Configuration.objects.get(
@@ -838,52 +838,50 @@ def reset_setup_application(request):
         user = request.user
         user_id = user.id
         if request.method == 'POST':
-            if request.POST.get('setup') == 'YES':
-                # Drops almost all the models because of cascade settings
-                Attribute_Configuration.objects.all().delete()
-                attribute_configuration = Attribute_Configuration.objects.create(
-                    attribute_title='Location', attribute_action='gen', user=user)
-                attribute_configuration.save()
-                attribute_alias = Attribute_Alias.objects.create(
-                    user=user, alias='GPE', attribute=Attribute_Configurationr)
-                attribute_alias.save()
-                generalization_configuration = Generalization_Configuration.objects.create(
-                    generalization_action='holonym', attribute=attribute_configuration, user=user)
-                generalization_configuration.save()
+            # Drops almost all the models because of cascade settings
+            Attribute_Configuration.objects.all().delete()
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='Location', attribute_action='gen', user=user)
+            attribute_configuration.save()
+            attribute_alias = Attribute_Alias.objects.create(
+                user=user, alias='GPE', attribute=attribute_configuration)
+            attribute_alias.save()
+            generalization_configuration = Generalization_Configuration.objects.create(
+                generalization_action='holonym', attribute=attribute_configuration, user=user)
+            generalization_configuration.save()
 
-                attribute_configuration = Attribute_Configuration.objects.create(
-                    attribute_title='Organization', user=user, attribute_action='del')
-                attribute_configuration.save()
-                attribute_alias = Attribute_Alias.objects.create(
-                    user=user, alias='ORG', attribute=Attribute_Configuration)
-                attribute_alias.save()
-                deletion_configuration = Deletion_Configuration.objects.create(
-                    attribute=attribute_configuration, replacement_name='<Organization>')
-                deletion_configuration.save()
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='Organization', user=user, attribute_action='del')
+            attribute_configuration.save()
+            attribute_alias = Attribute_Alias.objects.create(
+                user=user, alias='ORG', attribute=attribute_configuration)
+            attribute_alias.save()
+            deletion_configuration = Deletion_Configuration.objects.create(
+                attribute=attribute_configuration, replacement_name='<Organization>')
+            deletion_configuration.save()
 
-                attribute_configuration = Attribute_Configuration.objects.create(
-                    attribute_title='Person Name', user=user, attribute_action='del')
-                attribute_configuration.save()
-                attribute_alias = Attribute_Alias.objects.create(
-                    user=user, alias='PERSON', attribute=Attribute_Configuration)
-                attribute_alias.save()
-                deletion_configuration = Deletion_Configuration.objects.create(
-                    attribute=attribute_configuration, replacement_name='<NAME>')
-                deletion_configuration.save()
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='Person Name', user=user, attribute_action='del')
+            attribute_configuration.save()
+            attribute_alias = Attribute_Alias.objects.create(
+                user=user, alias='PERSON', attribute=attribute_configuration)
+            attribute_alias.save()
+            deletion_configuration = Deletion_Configuration.objects.create(
+                attribute=attribute_configuration, replacement_name='<NAME>')
+            deletion_configuration.save()
 
-                email_regex = '''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'''
-                attribute_configuration = Attribute_Configuration.objects.create(
-                    attribute_title='EMAIL ID', user=user,
-                    attribute_action='supp')
-                attribute_configuration.save()
-                regex_pattern = Regex_Pattern(
-                    attribute=attribute_configuration, regular_expression=email_regex, user=user)
-                regex_pattern.save()
-                supression_configuration = supression_configuration.objects.create(
-                    attribute=attribute_configuration, suppress_percent=70,
-                    replacement_character='*')
-                supression_configuration.save()
-                
+            email_regex = '''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'''
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='EMAIL ID', user=user,
+                attribute_action='supp')
+            attribute_configuration.save()
+            regex_pattern = Regex_Pattern(
+                attribute=attribute_configuration, regular_expression=email_regex, user=user)
+            regex_pattern.save()
+            supression_configuration = Supression_Configuration.objects.create(
+                attribute=attribute_configuration, suppress_percent=70,
+                replacement_character='*')
+            supression_configuration.save()
 
     else:
         return HttpResponseRedirect('/login')
