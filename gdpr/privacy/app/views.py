@@ -851,5 +851,25 @@ def reset_setup_application(request):
                     generalization_action='holonym', attribute=attribute_configuration, user=user)
                 generalization_configuration.save()
 
+                attribute_configuration = Attribute_Configuration.objects.create(
+                    attribute_title='Organization', user=user, attribute_action='del')
+                attribute_configuration.save()
+                attribute_alias = Attribute_Alias.objects.create(
+                    user=user, alias='ORG', attribute=Attribute_Configuration)
+                attribute_alias.save()
+                deletion_configuration = Deletion_Configuration.objects.create(
+                    attribute=attribute_configuration, replacement_name='<Organization>')
+                deletion_configuration.save()
+
+                attribute_configuration = Attribute_Configuration.objects.create(
+                    attribute_title='Person Name', user=user, attribute_action='del')
+                attribute_configuration.save()
+                attribute_alias = Attribute_Alias.objects.create(
+                    user=user, alias='PERSON', attribute=Attribute_Configuration)
+                attribute_alias.save()
+                deletion_configuration = Deletion_Configuration.objects.create(
+                    attribute=attribute_configuration, replacement_name='<NAME>')
+                deletion_configuration.save()
+
     else:
         return HttpResponseRedirect('/login')
