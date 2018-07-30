@@ -53,6 +53,8 @@ urlpatterns = [
         views.anonymize_uploaded_file_api),
     url(r'^anonymize_uploaded_file_gui/$',
         views.anonymize_uploaded_file_gui),
+    url(r'^reset_setup_application/$',
+        views.reset_setup_application),
 
 
 ]

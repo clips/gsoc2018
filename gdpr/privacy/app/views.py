@@ -882,6 +882,9 @@ def reset_setup_application(request):
                 attribute=attribute_configuration, suppress_percent=70,
                 replacement_character='*')
             supression_configuration.save()
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'reset_setup_application.html')
 
     else:
         return HttpResponseRedirect('/login')
