@@ -232,6 +232,7 @@ def give_new_label(label, text, user):
 
 
 def give_supressed_attribute(text, attribute_configuration):
+    ''' Carries out supression of the attribute '''
     supression_configuration = Supression_Configuration.objects.get(
         attribute=attribute_configuration)
     replacement_character = supression_configuration.replacement_character
@@ -255,6 +256,7 @@ def give_supressed_attribute(text, attribute_configuration):
 
 
 def register_user(request):
+    ''' New User registration function'''
     if request.method == 'POST':
         username = request.POST.get('email')
         first_name = request.POST.get('fname')
@@ -271,6 +273,7 @@ def register_user(request):
 
 
 def login_user(request):
+    ''' User Login '''
     if request.user.is_authenticated:
         return HttpResponseRedirect('/dashboard')
     else:
@@ -286,6 +289,7 @@ def login_user(request):
 
 
 def add_attribute(request):
+    ''' Used to add the attribute the user wants to anonimyze '''
     if request.user.is_authenticated:
         if request.method == 'POST':
             user = request.user
@@ -311,6 +315,7 @@ def add_attribute(request):
 
 
 def add_suppression_configuration(request, id):
+    '''Used to specifiy supression kind and details (percent etc) '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -347,6 +352,7 @@ def add_suppression_configuration(request, id):
 
 
 def add_deletion_configuration(request, id):
+    ''' Used to specify replacement for the attribute '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -369,6 +375,7 @@ def add_deletion_configuration(request, id):
 
 
 def add_alias(request, id):
+    ''' Adding Alias for the attribute. The alias is the NER tag given by the system '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -390,6 +397,7 @@ def add_alias(request, id):
 
 
 def show_dashboard(request):
+    ''' Home page/ dashboard'''
     if request.user.is_authenticated:
         user = request.user
         attributes = Attribute_Configuration.objects.filter(user=user)
@@ -412,6 +420,7 @@ def show_dashboard(request):
 
 
 def regex_based_anonymization(user, text):
+    ''' Used to identify attributes based on regex '''
     patterns = Regex_Pattern.objects.filter(user=user)
     new_text = text
     for pattern in patterns:
@@ -436,6 +445,7 @@ def regex_based_anonymization(user, text):
 
 
 def anonymize(request):
+    ''' Page for user to enter text to anonymize '''
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
@@ -459,6 +469,7 @@ def logout_user(request):
 
 
 def add_regex_pattern(request, id):
+    ''' Used to add regex patterns '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -480,6 +491,7 @@ def add_regex_pattern(request, id):
 
 
 def extract_wordvec_generalization(word, path_to_word_vectors, neighbor_number):
+    ''' Extracts the nearest neighbor from vector space '''
     vectors = Magnitude(path_to_word_vectors)
     generalized_attribute = vectors.most_similar(word, topn=neighbor_number)[
         neighbor_number - 1][0]
@@ -487,6 +499,7 @@ def extract_wordvec_generalization(word, path_to_word_vectors, neighbor_number):
 
 
 def extract_part_holonym(word, escalation_level):
+    ''' Acesses wordnet to extract part holonym '''
     if escalation_level == 1:
         if isinstance(word, str):
             synset_word = wn.synsets(word)[0]
@@ -507,6 +520,7 @@ def extract_part_holonym(word, escalation_level):
 
 
 def give_generalized_attribute(attribute_configuration, user, text):
+    ''' Gives the generalized attribute based on the generalization specified '''
     escalation_level = 2
     path_to_word_vectors = "/home/rudresh/Documents/gsoc2018/glove.6B.100d.magnitude"
     neighbor_number = 2
@@ -522,6 +536,7 @@ def give_generalized_attribute(attribute_configuration, user, text):
 
 
 def add_generalization_configuration(request, id):
+    ''' Used to add the generalization configuration '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -545,6 +560,7 @@ def add_generalization_configuration(request, id):
 
 
 def api_token_management(request):
+    ''' API Token management page '''
     if request.user.is_authenticated:
         user = request.user
         tokens = Token.objects.filter(user=user)
@@ -555,6 +571,7 @@ def api_token_management(request):
 
 @api_view(['POST', 'GET'])
 def anonymize_text_api(request):
+    ''' API to anonymze given text '''
     header_token = request.META.get('HTTP_AUTHORIZATION', None)
     if header_token is not None:
         try:
@@ -576,6 +593,7 @@ def anonymize_text_api(request):
 
 
 def regenerate_api_token(request):
+    ''' Used to regenerate API token '''
     if request.user.is_authenticated:
         user = request.user
         instances = Token.objects.filter(user=user)
@@ -590,6 +608,7 @@ def regenerate_api_token(request):
 
 
 def token_level_anon(text_to_anonymize, user):
+    ''' Function to generate token level anonymization details '''
     spacy_model = spacy.load('en_core_web_sm')
     document = spacy_model(text_to_anonymize)
     token_response = []
@@ -648,6 +667,7 @@ def token_level_anon(text_to_anonymize, user):
 
 @api_view(['POST'])
 def token_level_api(request):
+    ''' Wrapper for token level API '''
     header_token = request.META.get('HTTP_AUTHORIZATION', None)
     if header_token is not None:
         try:
@@ -740,6 +760,7 @@ def token_level_tf_idf_anonymize(response_dict, user):
 
 
 def upload_file_to_knowledgebase(request):
+    ''' GUI to upload file to TF-IDF Knowledgebase '''
     if request.user.is_authenticated:
         user = request.user
         user_id = user.id
@@ -758,6 +779,7 @@ def upload_file_to_knowledgebase(request):
 
 @api_view(['POST'])
 def upload_file_to_knowledgebase_api(request):
+    ''' API to upload file to TF-IDF knowledgebase '''
     header_token = request.META.get('HTTP_AUTHORIZATION', None)
     if header_token is not None:
         try:
@@ -783,6 +805,7 @@ def upload_file_to_knowledgebase_api(request):
 
 @api_view(['POST'])
 def anonymize_uploaded_file_api(request):
+    ''' API to upload file to anonymize '''
     header_token = request.META.get('HTTP_AUTHORIZATION', None)
     if header_token is not None:
         try:
@@ -813,6 +836,7 @@ def anonymize_uploaded_file_api(request):
 
 
 def anonymize_uploaded_file_gui(request):
+    ''' GUI to upload file to anonymize '''
     if request.user.is_authenticated:
         user = request.user
         user_id = user.id
