@@ -6,20 +6,26 @@
 <div class="col-md-10" style="margin: 0 auto;">
   <div class="card">
       <div class="card-header">
-          <strong class="card-title">Anonymize Text</strong>
+          <strong class="card-title">Anonymize Document</strong>
       </div>
       <div class="card-body">
         <div id="pay-invoice">
             <div class="card-body">
                 <div class="card-title">
-                    <h3 class="text-center">Enter text here </h3>
+                    <h3 class="text-center">Enter document to anonymize  here</h3>
                 </div>
                 <hr>
-                <form action="/anonymize/" method="post">
+                <form action="/anonymize_uploaded_file_gui/" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row form-group">
-                            <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Text to Anonymize</label></div>
-                            <div class="col-12 col-md-9"><textarea name="text_to_anonymize" id="textarea-input" rows="9" placeholder="Enter the Text here" class="form-control"required>{{text_to_anonymize}}</textarea></div>  
+                    <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Upload file to Anonymize</label></div>
+                            <div class="col-12 col-md-9">
+                            
+                                <input type="file" name="myfile" required>
+                            
+                            </div>  
+                    </div>
+
                     </div>
                   <div class="form-group">
                   <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
@@ -28,13 +34,12 @@
                   </div>
                 </form>
             </div>
-            {% if show_output %}
+            {% if success %}
             <div class="card-body">
                 <div class="card-title">
-                    <h3 class="text-center" style="color:red;">Anonymized Text:</h3>
+                    <h3 class="text-center" style="color:red;">Anonymized text: <br> <br> {{anonymized_text}} </h3>
                 </div>
                 <hr>
-                <h6>{{anonymized_text}}</h6>
             </div>
             {% endif %}
         </div>

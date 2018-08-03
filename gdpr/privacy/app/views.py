@@ -8,9 +8,23 @@ import os
 import sys
 import math
 from pathlib import Path
-from .models import Attribute_Configuration, Attribute_Alias, Supression_Configuration, Deletion_Configuration, Regex_Pattern
+from .models import Attribute_Configuration, Attribute_Alias, \
+    Supression_Configuration, Deletion_Configuration, \
+    Regex_Pattern, Generalization_Configuration, TF_IDF_configuration
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from nltk.corpus import wordnet as wn
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view
+from re import sub
+from django.http import JsonResponse
+from pymagnitude import Magnitude
+from . import tf_idf
+from json import dumps
+from nltk.corpus import stopwords
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+stop_words = set(stopwords.words('english'))
 
 
 def preprocess(text):
@@ -169,12 +183,12 @@ def entity_recognition_spacy(text, user):
     ''' Function to slice and replace substrings with entity labels '''
     if number_of_entities is 1:
         ent = entities_in_document[0]
-        new_label = give_new_label(ent.label_, ent.text, user)
+        new_label = give_new_label(ent.label_, ent.text, user)['new_label']
         anonymized_text = old_text[:ent.start_char] + \
             new_label + old_text[ent.end_char:]
     else:
         for index, ent in enumerate(entities_in_document):
-            new_label = give_new_label(ent.label_, ent.text, user)
+            new_label = give_new_label(ent.label_, ent.text, user)['new_label']
             if index is 0:
                 anonymized_text += old_text[:ent.start_char] + new_label + \
                     old_text[ent.end_char:entities_in_document[
@@ -190,26 +204,35 @@ def entity_recognition_spacy(text, user):
 
 def give_new_label(label, text, user):
     ''' When given the entity label and the actual entity text, returns the replacement entity '''
+    new_label_dict = {}
+    new_label = ''
     try:
         # Checking for the alias in the DB
         alias = Attribute_Alias.objects.get(alias=label, user=user)
     except Attribute_Alias.DoesNotExist:
         # return and terminate function if it does not exist
-        return label
+        new_label_dict['has_new_label'] = False
+        new_label_dict['new_label'] = text
+        return new_label_dict
     attribute_configuration = alias.attribute
     if attribute_configuration.attribute_action == 'del':
         deletion_configuration = Deletion_Configuration.objects.get(
             attribute=attribute_configuration)
         new_label = deletion_configuration.replacement_name
-        return new_label
     elif attribute_configuration.attribute_action == 'gen':
-        pass
+        new_label = give_generalized_attribute(
+            attribute_configuration, user, text)
     else:
-        label = give_supressed_attribute(text, attribute_configuration)
-        return label
+        new_label = give_supressed_attribute(text, attribute_configuration)
+    # If an alias for the attribute is found, add it to the new_label_dict and
+    # return
+    new_label_dict['new_label'] = new_label
+    new_label_dict['has_new_label'] = True
+    return new_label_dict
 
 
 def give_supressed_attribute(text, attribute_configuration):
+    ''' Carries out supression of the attribute '''
     supression_configuration = Supression_Configuration.objects.get(
         attribute=attribute_configuration)
     replacement_character = supression_configuration.replacement_character
@@ -232,46 +255,8 @@ def give_supressed_attribute(text, attribute_configuration):
         return new_text
 
 
-if __name__ == "__main__":
-    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    base_path = str(Path(base_path).parents[0])
-    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
-        " I was then hired by Google."
-    '''
-    # Stanford experiment
-    preprocessed_text = preprocess(text)
-    print(preprocessed_text)
-    for sentence in preprocessed_text:
-        print(entity_recognition_stanford(sentence, base_path))
-    '''
-    # Spacy Experiment
-    preprocessed_text = preprocess(text)
-    sentences = [' '.join(word) for word in preprocessed_text]
-    text = '. '.join(sentences)
-    print(entity_recognition_spacy(text))
-
-
-def main():
-    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    base_path = str(Path(base_path).parents[0])
-    text = "My name is John Oliver, I stay in India and fell sick and was admitted to Hopkins hospital."\
-        " I was then hired by Google."
-    '''
-    # Stanford experiment
-    preprocessed_text = preprocess(text)
-    print(preprocessed_text)
-    for sentence in preprocessed_text:
-        print(entity_recognition_stanford(sentence, base_path))
-    '''
-    # Spacy Experiment
-    preprocessed_text = preprocess(text)
-    sentences = [' '.join(word) for word in preprocessed_text]
-    text = '. '.join(sentences)
-    print('OLD TEXT : ' + text)
-    print('NEW TEXT : ' + entity_recognition_spacy(text))
-
-
 def register_user(request):
+    ''' New User registration function'''
     if request.method == 'POST':
         username = request.POST.get('email')
         first_name = request.POST.get('fname')
@@ -288,6 +273,7 @@ def register_user(request):
 
 
 def login_user(request):
+    ''' User Login '''
     if request.user.is_authenticated:
         return HttpResponseRedirect('/dashboard')
     else:
@@ -303,6 +289,7 @@ def login_user(request):
 
 
 def add_attribute(request):
+    ''' Used to add the attribute the user wants to anonimyze '''
     if request.user.is_authenticated:
         if request.method == 'POST':
             user = request.user
@@ -328,24 +315,25 @@ def add_attribute(request):
 
 
 def add_suppression_configuration(request, id):
+    '''Used to specifiy supression kind and details (percent etc) '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
             id=id, user=user, attribute_action='supp')
-        print('PASSSSSS pehle')
         if len(attribute_configuration) > 0:
-            print('PASSSSSS')
             attribute = attribute_configuration[0]
             if request.method == 'POST':
                 supression_configuration, exists = Supression_Configuration.objects.get_or_create(
                     attribute=attribute)
                 if request.POST.get('suppress_number'):
-                    #suppress_number = int(request.POST.get('suppress_number').strip())
+                    # suppress_number =
+                    # int(request.POST.get('suppress_number').strip())
                     supression_configuration.suppress_number = int(request.POST.get(
                         'suppress_number'))
                     supression_configuration.suppress_percent = None
                 if request.POST.get('suppress_percent'):
-                    #suppress_percent = int(request.POST.get('suppress_percent').strip())
+                    # suppress_percent =
+                    # int(request.POST.get('suppress_percent').strip())
                     supression_configuration.suppress_percent = int(request.POST.get(
                         'suppress_percent'))
                     supression_configuration.suppress_number = None
@@ -364,6 +352,7 @@ def add_suppression_configuration(request, id):
 
 
 def add_deletion_configuration(request, id):
+    ''' Used to specify replacement for the attribute '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -386,6 +375,7 @@ def add_deletion_configuration(request, id):
 
 
 def add_alias(request, id):
+    ''' Adding Alias for the attribute. The alias is the NER tag given by the system '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -407,6 +397,7 @@ def add_alias(request, id):
 
 
 def show_dashboard(request):
+    ''' Home page/ dashboard'''
     if request.user.is_authenticated:
         user = request.user
         attributes = Attribute_Configuration.objects.filter(user=user)
@@ -423,12 +414,13 @@ def show_dashboard(request):
                 attribute.link = '/add_generalization_configuration/' + \
                     str(attribute.id) + '/'
 
-        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases, 'regex_patterns':regex_patterns})
+        return render(request, 'dashboard.html', {'user': user, 'attributes': attributes, 'aliases': aliases, 'regex_patterns': regex_patterns})
     else:
         return HttpResponseRedirect('/login')
 
 
 def regex_based_anonymization(user, text):
+    ''' Used to identify attributes based on regex '''
     patterns = Regex_Pattern.objects.filter(user=user)
     new_text = text
     for pattern in patterns:
@@ -453,6 +445,7 @@ def regex_based_anonymization(user, text):
 
 
 def anonymize(request):
+    ''' Page for user to enter text to anonymize '''
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
@@ -476,6 +469,7 @@ def logout_user(request):
 
 
 def add_regex_pattern(request, id):
+    ''' Used to add regex patterns '''
     if request.user.is_authenticated:
         user = request.user
         attribute_configuration = Attribute_Configuration.objects.filter(
@@ -492,5 +486,429 @@ def add_regex_pattern(request, id):
                 return render(request, 'add_regex_pattern.html', {'attribute': attribute})
         else:
             return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def extract_wordvec_generalization(word, path_to_word_vectors, neighbor_number):
+    ''' Extracts the nearest neighbor from vector space '''
+    vectors = Magnitude(path_to_word_vectors)
+    generalized_attribute = vectors.most_similar(word, topn=neighbor_number)[
+        neighbor_number - 1][0]
+    return generalized_attribute
+
+
+def extract_part_holonym(word, escalation_level):
+    ''' Acesses wordnet to extract part holonym '''
+    if escalation_level == 1:
+        if isinstance(word, str):
+            synset_word = wn.synsets(word)[0]
+        else:
+            synset_word = word
+        holonyms = synset_word.part_holonyms()
+        try:
+            return holonyms[0].lemmas()[0].name()
+        except (ValueError, IndexError):
+            return word
+    else:
+        if isinstance(word, str):
+            synset_word = wn.synsets(word)[0]
+        else:
+            synset_word = word
+        holonym = synset_word.part_holonyms()[0]
+        return extract_part_holonym(holonym, escalation_level - 1)
+
+
+def give_generalized_attribute(attribute_configuration, user, text):
+    ''' Gives the generalized attribute based on the generalization specified '''
+    escalation_level = 2
+    path_to_word_vectors = "glove.6B.100d.magnitude"
+    neighbor_number = 2
+    generalization_configuration = Generalization_Configuration.objects.get(
+        attribute=attribute_configuration)
+    if generalization_configuration.generalization_action == 'wordvec':
+        generalized_attribute = extract_wordvec_generalization(
+            text, path_to_word_vectors, neighbor_number)
+        return generalized_attribute
+    else:
+        generalized_attribute = extract_part_holonym(text, escalation_level)
+        return generalized_attribute
+
+
+def add_generalization_configuration(request, id):
+    ''' Used to add the generalization configuration '''
+    if request.user.is_authenticated:
+        user = request.user
+        attribute_configuration = Attribute_Configuration.objects.filter(
+            id=id, user=user, attribute_action='gen')
+        if len(attribute_configuration) > 0:
+            attribute = attribute_configuration[0]
+            if request.method == 'POST':
+                generalization_configuration, exists = Generalization_Configuration.objects.get_or_create(
+                    attribute=attribute)
+                generalization_configuration.generalization_action = request.POST.get(
+                    'generalization_action')
+                generalization_configuration.clean()
+                generalization_configuration.save()
+                return HttpResponseRedirect('/dashboard')
+            else:
+                return render(request, 'add_generalization_configuration.html', {'attribute': attribute})
+        else:
+            return HttpResponseRedirect('/dashboard')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def api_token_management(request):
+    ''' API Token management page '''
+    if request.user.is_authenticated:
+        user = request.user
+        tokens = Token.objects.filter(user=user)
+        return render(request, 'api_token_management.html', {'user': user, 'tokens': tokens})
+    else:
+        return HttpResponseRedirect('/login')
+
+
+@api_view(['POST', 'GET'])
+def anonymize_text_api(request):
+    ''' API to anonymze given text '''
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+
+        text_to_anonymize = request.POST.get('text_to_anonymize')
+        anonymized_text = regex_based_anonymization(user, text_to_anonymize)
+        anonymized_text = entity_recognition_spacy(anonymized_text, user)
+        response_dict = {'anonymized_text': anonymized_text}
+        return JsonResponse(response_dict)
+    else:
+        return HttpResponse("ERROR, ADD A HEADER TOKEN")
+
+
+def regenerate_api_token(request):
+    ''' Used to regenerate API token '''
+    if request.user.is_authenticated:
+        user = request.user
+        instances = Token.objects.filter(user=user)
+        if len(instances) > 0:
+            instances[0].delete()
+            Token.objects.create(user=user)
+            return HttpResponseRedirect('/api_token_management')
+        else:
+            return HttpResponse('INVALID')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def token_level_anon(text_to_anonymize, user):
+    ''' Function to generate token level anonymization details '''
+    spacy_model = spacy.load('en_core_web_sm')
+    document = spacy_model(text_to_anonymize)
+    token_response = []
+    index = 0
+    while(index < len(document)):
+        word = document[index]
+        word_text = word.text
+        if word.ent_type_:
+            if word.ent_iob_ == 'B':
+                # placeholder for the replacement function
+                entity_type = word.ent_type_
+                replacement_dict = give_new_label(entity_type, word_text, user)
+                replacement = replacement_dict['new_label']
+                is_replaced = replacement_dict['has_new_label']
+                token_dict = {'token': word_text, 'is_entity': True,
+                              'entity_type': entity_type, 'replacement': replacement, 'is_replaced': is_replaced}
+                token_response.append(token_dict)
+            else:
+                # handling multi token entities,I.E when the entity type is
+                # "I"
+                temporary_index = index
+                '''
+                Acessing the first token in the entity, that is current last
+                entry in array
+                '''
+                word_text = token_response[-1]['token']
+                while(temporary_index < len(document) and document[temporary_index].ent_iob_ == 'I'):
+                    # appending all the words that are a part of that
+                    # entity
+                    word_text = word_text + ' ' + \
+                        document[temporary_index].text
+                    temporary_index += 1
+                # placeholder for the replacement function
+                entity_type = word.ent_type_
+                replacement_dict = give_new_label(entity_type, word_text, user)
+                replacement = replacement_dict['new_label']
+                is_replaced = replacement_dict['has_new_label']
+                token_dict = {'token': word_text, 'is_entity': True,
+                              'entity_type': entity_type, 'replacement': replacement, 'is_replaced': is_replaced}
+                # Deleting the beginning token entry and replacing with
+                # entire string
+                del token_response[-1]
+                token_response.append(token_dict)
+                # Skipping all the  I entities covered
+                index = temporary_index
+
+        else:
+            replacement = ''
+            token_dict = {'token': word_text, 'is_entity': False,
+                          'entity_type': word.ent_type_, 'replacement': replacement, 'is_replaced': False}
+            token_response.append(token_dict)
+        index += 1
+    response = {'response': token_response, 'original_text': text_to_anonymize}
+    return response
+
+
+@api_view(['POST'])
+def token_level_api(request):
+    ''' Wrapper for token level API '''
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+        text_to_anonymize = request.POST.get('text_to_anonymize')
+        # This is NER based detection and anonymization
+        response = token_level_anon(text_to_anonymize, user)
+        # If the user has set the flag for TF-IDF anonymization, only then will
+        # it take place
+        if 'tfidf_anonymize' in request.POST:
+            if request.POST.get('tfidf_anonymize') == 'True' or request.POST.get('tfidf_anonymize') == 'true':
+                # Passing to TF-IDF BASED RARE TOKEN DETECTION
+                response = token_level_tf_idf_anonymize(response, user)
+        return JsonResponse(response)
+
+
+def add_document_to_knowledgebase(request):
+    ''' Wrapper to add documents to the TF-IDF knowledgebase '''
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST':
+            document_text = request.POST.get('document_text')
+            tf_idf.generate_idf_counts(user_id, document_text)
+            return render(request, 'add_document_to_knowledgebase.html', {'success': True})
+        else:
+            return render(request, 'add_document_to_knowledgebase.html')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def tf_idf_anonymize(request):
+    ''' Trial function with seperate template. Template to be merged later '''
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            text_to_anonymize = request.POST.get('text_to_anonymize')
+            anonymized_text = text_to_anonymize
+            tf_idf_scores = tf_idf.obtain_tf_idf_scores(
+                user.id, text_to_anonymize)
+            # Threshold is currently hardcoded. Change it to dynamic generation
+            # or DB read
+            threshold = 0.4
+            for token in tf_idf_scores:
+                if tf_idf_scores[token] > threshold:
+                    anonymized_text = re.sub(
+                        token, 'REDACTED', anonymized_text, flags=re.I)
+            return render(request, 'tf_idf_anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize, 'threshold': threshold})
+        else:
+            return render(request, 'tf_idf_anonymize.html')
+
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def token_level_tf_idf_anonymize(response_dict, user):
+    ''' Function takes the response dict from NER anonymization and applies TF-IDF detection and anonymizatio'''
+    text_to_anonymize = response_dict['original_text']
+    tf_idf_scores = tf_idf.obtain_tf_idf_scores(
+        user.id, text_to_anonymize)
+    response = response_dict['response']
+    try:
+        tf_idf_configuration = TF_IDF_configuration.objects.get(user=user)
+        replacement = tf_idf_configuration.replacement
+        threshold = tf_idf_configuration.threshold
+    except TF_IDF_configuration.DoesNotExist:
+        # In case the configuration does not exist, revert to default values
+        replacement = 'REDACTED'
+        threshold = 0.4
+    for index, entry in enumerate(response):
+        # Checking if the token has been assigned a replacement
+        if not entry['is_replaced']:
+            try:
+                if tf_idf_scores[entry['token'].lower()] > threshold:
+                    response_dict['response'][index][
+                        'replacement'] = replacement
+            except KeyError:
+                # When the token is non existant in TF_IDF, assumed to be rare
+                if entry['token'] not in stop_words:
+                    # except when token is a stop_word
+                    response_dict['response'][index][
+                        'replacement'] = replacement
+    return response_dict
+
+
+def upload_file_to_knowledgebase(request):
+    ''' GUI to upload file to TF-IDF Knowledgebase '''
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST' and request.FILES['myfile']:
+            myfile = request.FILES['myfile']
+            file_text_lines = [line.decode('utf8').strip()
+                               for line in myfile.readlines(
+            )]
+            file_text = ' '.join(file_text_lines)
+            tf_idf.generate_idf_counts(user_id, file_text)
+            return render(request, 'upload_file_to_knowledgebase.html')
+        return render(request, 'upload_file_to_knowledgebase.html')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+@api_view(['POST'])
+def upload_file_to_knowledgebase_api(request):
+    ''' API to upload file to TF-IDF knowledgebase '''
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+            user_id = user.id
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+
+        myfile = request.FILES['file_to_upload']
+        file_text_lines = [line.decode('utf8').strip()
+                           for line in myfile.readlines(
+        )]
+        file_text = ' '.join(file_text_lines)
+        tf_idf.generate_idf_counts(user_id, file_text)
+        return JsonResponse({'upload_status': 'uploaded succesfully'}, status=200)
+    else:
+        return HttpResponse("ERROR, ADD A HEADER TOKEN")
+
+
+@api_view(['POST'])
+def anonymize_uploaded_file_api(request):
+    ''' API to upload file to anonymize '''
+    header_token = request.META.get('HTTP_AUTHORIZATION', None)
+    if header_token is not None:
+        try:
+            token = sub('Token ', '', request.META.get(
+                'HTTP_AUTHORIZATION', None))
+            token_obj = Token.objects.get(key=token)
+            request.user = token_obj.user
+            user = request.user
+            user_id = user.id
+        except Token.DoesNotExist:
+            return HttpResponse('INVALID TOKEN')
+
+        myfile = request.FILES['file_to_anonymize']
+        file_text_lines = [line.decode('utf8').strip()
+                           for line in myfile.readlines(
+        )]
+        file_text = ' '.join(file_text_lines)
+        response = token_level_anon(file_text, user)
+        # If the user has set the flag for TF-IDF anonymization, only then will
+        # it take place
+        if 'tfidf_anonymize' in request.POST:
+            if request.POST.get('tfidf_anonymize') == 'True' or request.POST.get('tfidf_anonymize') == 'true':
+                # Passing to TF-IDF BASED RARE TOKEN DETECTION
+                response = token_level_tf_idf_anonymize(response, user)
+        return JsonResponse(response)
+    else:
+        return HttpResponse("ERROR, ADD A HEADER TOKEN")
+
+
+def anonymize_uploaded_file_gui(request):
+    ''' GUI to upload file to anonymize '''
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST':
+            myfile = request.FILES['myfile']
+            file_text_lines = [line.decode('utf8').strip()
+                               for line in myfile.readlines(
+            )]
+            file_text = ' '.join(file_text_lines)
+            anonymized_text = regex_based_anonymization(
+                user, file_text)
+            anonymized_text = entity_recognition_spacy(anonymized_text, user)
+            return render(request, 'anonymize_uploaded_file_gui.html', {'success': True, 'anonymized_text': anonymized_text})
+        else:
+            return render(request, 'anonymize_uploaded_file_gui.html')
+    else:
+        return HttpResponseRedirect('/login')
+
+
+def reset_setup_application(request):
+    ''' Resets all attribute configurations and applies defaults'''
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = user.id
+        if request.method == 'POST':
+            # Drops almost all the models because of cascade settings
+            Attribute_Configuration.objects.all().delete()
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='Location', attribute_action='gen', user=user)
+            attribute_configuration.save()
+            attribute_alias = Attribute_Alias.objects.create(
+                user=user, alias='GPE', attribute=attribute_configuration)
+            attribute_alias.save()
+            generalization_configuration = Generalization_Configuration.objects.create(
+                generalization_action='holonym', attribute=attribute_configuration, user=user)
+            generalization_configuration.save()
+
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='Organization', user=user, attribute_action='del')
+            attribute_configuration.save()
+            attribute_alias = Attribute_Alias.objects.create(
+                user=user, alias='ORG', attribute=attribute_configuration)
+            attribute_alias.save()
+            deletion_configuration = Deletion_Configuration.objects.create(
+                attribute=attribute_configuration, replacement_name='<Organization>')
+            deletion_configuration.save()
+
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='Person Name', user=user, attribute_action='del')
+            attribute_configuration.save()
+            attribute_alias = Attribute_Alias.objects.create(
+                user=user, alias='PERSON', attribute=attribute_configuration)
+            attribute_alias.save()
+            deletion_configuration = Deletion_Configuration.objects.create(
+                attribute=attribute_configuration, replacement_name='<NAME>')
+            deletion_configuration.save()
+
+            email_regex = '''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'''
+            attribute_configuration = Attribute_Configuration.objects.create(
+                attribute_title='EMAIL ID', user=user,
+                attribute_action='supp')
+            attribute_configuration.save()
+            regex_pattern = Regex_Pattern(
+                attribute=attribute_configuration, regular_expression=email_regex, user=user)
+            regex_pattern.save()
+            supression_configuration = Supression_Configuration.objects.create(
+                attribute=attribute_configuration, suppress_percent=70,
+                replacement_character='*')
+            supression_configuration.save()
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'reset_setup_application.html')
+
     else:
         return HttpResponseRedirect('/login')

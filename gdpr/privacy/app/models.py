@@ -4,6 +4,10 @@ from django.db import models
 from django.db import models
 # Create your models here.
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
+from django.conf import settings
 
 
 class Attribute_Configuration(models.Model):
@@ -74,3 +78,37 @@ class Regex_Pattern(models.Model):
     regular_expression = models.CharField(max_length=500)
     # Adding user for faster DB lookups
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+
+
+class Generalization_Configuration(models.Model):
+    # Linking it to the attribute
+    attribute = models.ForeignKey(
+        Attribute_Configuration, on_delete=models.CASCADE)
+    # Adding user for faster DB lookups
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    GENERALIZATION_ACTION_CHOICES = (
+        ('holonym', 'holonym'),
+        ('wordvec', 'wordvector'),
+    )
+    generalization_action = models.CharField(
+        max_length=6, choices=GENERALIZATION_ACTION_CHOICES)
+
+    def clean(self, *args, **kwargs):
+        if self.generalization_action != 'holonym' and self.generalization_action != 'wordvec':
+            raise Exception(
+                'Illegal generalization option entered')
+
+    def __str__(self):
+        return self.attribute.attribute_title + ' - ' + self.generalization_action
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
+
+class TF_IDF_configuration(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    threshhold = models.IntegerField()
+    replacement = models.CharField(max_length=20)

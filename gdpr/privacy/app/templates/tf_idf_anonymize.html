@@ -12,10 +12,10 @@
         <div id="pay-invoice">
             <div class="card-body">
                 <div class="card-title">
-                    <h3 class="text-center">Enter text here </h3>
+                    <h3 class="text-center">Enter text here</h3>
                 </div>
                 <hr>
-                <form action="/anonymize/" method="post">
+                <form action="/tf_idf_anonymize/" method="post">
                     {% csrf_token %}
                     <div class="row form-group">
                             <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Text to Anonymize</label></div>
@@ -31,7 +31,7 @@
             {% if show_output %}
             <div class="card-body">
                 <div class="card-title">
-                    <h3 class="text-center" style="color:red;">Anonymized Text:</h3>
+                    <h3 class="text-center" style="color:red;">Anonymized Text (TF-IDF SCORE THRESHOLD USED :{{threshold}}) </h3>
                 </div>
                 <hr>
                 <h6>{{anonymized_text}}</h6>

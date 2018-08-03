@@ -5,3 +5,6 @@ gdpr/privacy/app/migrations/
 *stanford-ner.jar
 .sass-cache
 /.sass-cache
+tf_idf_scores/
+gdpr/privacy/media/
+gdpr/privacy/glove.6B.100d.magnitude

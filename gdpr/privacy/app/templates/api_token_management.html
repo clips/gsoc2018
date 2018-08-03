@@ -1,0 +1,41 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+
+
+<div class="row" style="margin-left:10px">
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <strong class="card-title">Tokens for {{user.username}}</strong>
+        </div>
+        <div class="card-body">
+  <table id="bootstrap-data-table" class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Date Generated</th>
+        <th>Regenerate Token</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for token in tokens %}
+      <tr>
+        <td>{{ token.key }}</td>
+        <td>{{ token.created }}</td>
+        <td>
+        <button type="button" class="btn btn-success" onclick="location.href='/regenerate_api_token/'">Generate New Token </button> </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+{% endblock %}
