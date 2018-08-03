@@ -4,7 +4,6 @@ cytoolz==0.8.2
 dill==0.2.7.1
 Django==1.11.13
 djangorestframework==3.8.2
-en-core-web-sm==2.0.0
 fasteners==0.14.1
 lz4==2.0.0
 monotonic==1.5
@@ -16,7 +15,6 @@ numpy==1.14.5
 pathlib==1.0.1
 plac==0.9.6
 preshed==1.0.0
-pymagnitude==0.1.46
 pytz==2018.4
 regex==2017.4.5
 six==1.11.0

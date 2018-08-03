@@ -522,7 +522,7 @@ def extract_part_holonym(word, escalation_level):
 def give_generalized_attribute(attribute_configuration, user, text):
     ''' Gives the generalized attribute based on the generalization specified '''
     escalation_level = 2
-    path_to_word_vectors = "/home/rudresh/Documents/gsoc2018/glove.6B.100d.magnitude"
+    path_to_word_vectors = "glove.6B.100d.magnitude"
     neighbor_number = 2
     generalization_configuration = Generalization_Configuration.objects.get(
         attribute=attribute_configuration)
