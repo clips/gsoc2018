@@ -31,5 +31,9 @@ Example: `I live in Beijing` get's generalized to `I live in China` at level 1 g
  3. Install the requirments using `pip3 install -r requirements.txt`. 
  4. You also need to download the spacy model. Download and install it using `python3 -m spacy download en_core_web_sm`. Should not take more a few minutes (29 MB of download).
  5. Download NLTK corpus by using `python3 -c "import nltk; nltk.download('wordnet')"`
- 6. Go into the privacy directory by doing `cd privacy` and run the following commands : `python3 manage.py makemigrations` and `python3 manage.py migrate`. 
- 7. Your application is now ready to use. Run `python3 manage.py runserver` to start it up and navigate in your console to [localhost:8000](localhost:8000) to view the webapp.
+ 6.  Download the [Plasticity AI's](https://github.com/plasticityai/magnitude) magnitude format of word by clicking [here](http://magnitude.plasticity.ai/glove+approx/glove.6B.100d.magnitude). 
+ 7. Paste the file in the privacy directory.  (You may also do this in one step by doing `cd privacy` followed by 
+`wget http://magnitude.plasticity.ai/glove+approx/glove.6B.100d.magnitude` 
+ 8. Install the magnitude package by doing: `SKIP_MAGNITUDE_WHEEL=1 pip3 install pymagnitude==0.1.46` (not there in the requirements because of the extra flag)
+ 9. In case you haven't already, go into the privacy directory by doing `cd privacy` and run the following commands : `python3 manage.py makemigrations` and `python3 manage.py migrate`. 
+ 10. Your application is now ready to use. Run `python3 manage.py runserver` to start it up and navigate in your console to [localhost:8000](localhost:8000) to view the webapp.
