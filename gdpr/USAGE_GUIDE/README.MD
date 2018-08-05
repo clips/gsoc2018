@@ -19,7 +19,7 @@ ii) Set a way for the attribute to be detected.
 
 
 
-**i) Configuring the anonymization / Adding an attribute:**
+### i) Configuring the anonymization / Adding an attribute
 
 
 1) Click on &quot;Add Attribute&quot;
@@ -29,9 +29,10 @@ ii) Set a way for the attribute to be detected.
 _Choosing the kind of anonymization_
 
 
+
 2) Select the kind of anonymization you want
 
-2.1) Deletion:
+  2.1) Deletion:
 
 To be used in certain cases where retaining a part of the attribute through the other anonymization methods too is not appropriate. Completely replaces the attribute with a pre-set replacement. Example: My name is John Doe would be replaced by My name is \&lt;Name\&gt;.
 
@@ -41,7 +42,7 @@ _Choosing replacement string for deletion_
 
 When choosing deletion, you need to provide the system with a replacement string.
 
-2.2) Generalization:
+  2.2) Generalization:
 
  To be used when the entity is sensitive enough to need anonymization but can still be partially retained to provide information. This system has two methods of carrying out generalization
 
@@ -51,7 +52,7 @@ When choosing deletion, you need to provide the system with a replacement string
 ![](screenshots/gen_config.png)
 _Choosing the generalization type_
 
-2.3) Suppression:
+  2.3) Suppression:
 
  To be used when hiding a part of the information is enough to protect the user&#39;s anonymity. The user can supply the percentage or the number of bits they want to be supressed. Example: My phone number is 9876543210 would be replaced by My phone number is 98675\*\*\*\*\* if the user chooses 50% supression.
 
@@ -63,7 +64,7 @@ The user get&#39;s to choose between two types of suppressions and the replaceme
 ![](screenshots/supp_config.png)
 _Configuring suppression_
 
-**ii) Set a way for the attribute to be detected**
+### ii) Set a way for the attribute to be detected
 
 There are two general ways in which the attribute just added can be setup for detection.
 
@@ -89,9 +90,9 @@ _3)_ Detecting Attributes using TF-IDF: The third method in which the system det
 
 This system offers multiple options for text to be anonymized.
 
-1) Through GUI:
+#### Through GUI:
 
-1.1) Entering Text:
+1. By entering Text:
 
 The user can directly enter the text he wishes to be anonymized in a box
 
@@ -99,20 +100,20 @@ The user can directly enter the text he wishes to be anonymized in a box
 ![](screenshots/anonymize.png)
 _Anonymizing text entered_
 
-1.2) By uploading a file:
+2) By uploading a file:
 
 In case the user wishes to anonymize text in an uploaded file, the user can do that too. The uploaded file will NOT be saved on the server.
 
 ![](screenshots/anonymize_file_gui.png)
 _Uploading a file to be anonymized_
 
-2) Through API:
+#### Through API:
 
 Authentication via API: While making any request via the API, the authentication token needs to be included in the header in the format:
 
     {"Authorization" : "Token <your_token_here>"}
 
-2.1) By directly making a POST request with the plaintext in the body.
+1) By directly making a POST request with the plaintext in the body.
 
 To directly make a POST request, the url is /anonymize\_text\_api/ and in the Body, set
 
@@ -125,7 +126,7 @@ _Token level API response_
 
 
 
-2.2) By uploading the file via a POST request
+2) By uploading the file via a POST request
 
 To make a POST request by uploading a file, the url is /anonymize\_uploaded\_file\_api/ and in the body, set
 
@@ -137,11 +138,11 @@ The response is by default at the token level.
 
 
 
-1) Via GUI:
+#### Via GUI:
 
 Text can be added to the TF-IDF knowledgebase in the same way as anonymizing text. The user can either enter the text directly or upload the file. The links are provided in the navigation bar.
 
-2) Via API:
+#### Via API:
 
 Authentication via API: While making any request via the API, the authentication token needs to be included in the header in the format:
 
