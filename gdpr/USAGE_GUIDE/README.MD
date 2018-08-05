@@ -110,13 +110,13 @@ _Uploading a file to be anonymized_
 
 Authentication via API: While making any request via the API, the authentication token needs to be included in the header in the format:
 
-{&quot;Authorization&quot; : &quot;Token \&lt;your\_token\_here\&gt;&quot;}
+    {"Authorization" : "Token <your_token_here>"}
 
 2.1) By directly making a POST request with the plaintext in the body.
 
 To directly make a POST request, the url is /anonymize\_text\_api/ and in the Body, set
 
-{&quot;text\_to\_anonymize&quot; : &quot;\&lt;Insert Text Here\&gt;&quot;}
+    {"text_to_anonymize" : "<Insert_Text_Here>"}
 
 In case, you wish to get token level details, make the request to: /token\_level\_api/
 
@@ -129,13 +129,9 @@ _Token level API response_
 
 To make a POST request by uploading a file, the url is /anonymize\_uploaded\_file\_api/ and in the body, set
 
-{&quot;file\_to\_anonymize&quot; : \&lt;attach file here\&gt;}
+    {"file_to_anonymize" : <attach file here>}
 
 The response is by default at the token level.
-
-#
-
-
 
 ## Adding a file/text to the TF--IDF Knowledgebase
 
@@ -149,7 +145,7 @@ Text can be added to the TF-IDF knowledgebase in the same way as anonymizing tex
 
 Authentication via API: While making any request via the API, the authentication token needs to be included in the header in the format:
 
-{&quot;Authorization&quot; : &quot;Token \&lt;your\_token\_here\&gt;&quot;}
+    {"Authorization" : "Token <your_token_here>"}
 
 A file can directly be added by making a POST request to
 
@@ -157,13 +153,12 @@ A file can directly be added by making a POST request to
 
 With the parameters in body set as:
 
-{&quot;file\_to\_anonymize&quot; : \&lt;attach file here\&gt;}
+    {"file_to_anonymize": <attach_file_here>}
 
-#
 
 ## API Authentication Token Management
 
-#
+
 
 The API endpoints use system generated tokens for authentication. At the API Token Management page, you can regenerate your token. Regenerating a token will render your previous token void. A user can at any point have just one active authentication token.
 
