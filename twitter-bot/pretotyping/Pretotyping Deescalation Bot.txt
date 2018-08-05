@@ -1,0 +1,249 @@
+Starting execution...
+Scanning Twitter for keyword: 'prime minister'
+Searching for angry Tweets...
+    - Tweet encountered: "Imran Khan is going to be Pakistan's next Prime Minister. #YesHeKhan"
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "On the upside, Gareth Southgate is now free to be Prime Minister #ENGCRO"
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "Dear 63 million Americans. Thank you. You voted this great man to power. 
+                          Failed by our treacherous Prime Minister and Muslim mayor, Britain looks to you for hope. #MAGA"
+      Anger level: 0.6 (Or? Not really an angry Tweet but definitely one that could be replied to.)
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: 'prime minister'
+      Extracted initial anger level: 0.6
+      Generated reply: "If I understand it correctly, you are angry about the Prime Minister. Could you explain to me why?"
+        - At: 13:41 | 12/07/2018
+      Response: N/A (as of 13:42 | 12/07/2018)
+    - Tweet encountered: "Malay Prime Minister, Chinese Finance Minister, Indian Attorney General, and Native (Kadazan) Chief Justice. 
+                          Is this not a representation of exactly what Malaysia is all about and one which we all can be proud of?"
+      Anger level: 0.1
+      Action: Continue
+    - Tweet encountered: "Leaving India - I spent four days in India among its kind, generous people. Living gods appear to reside in their eyes, 
+                          and Prime Minister Modi @narendramodi is a man who has known the value of harmony his entire life—just as India has throughout its history."
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "Crap tory scum prime minister thatcher resigned 
+                          So what are you waiting for theresa ?
+                          Time to fu*k off 
+                          General election now"
+      Anger level: 1
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: 'prime minister'
+      Extracted initial anger level: 1
+      Generated reply: "I see that you are unhappy about the Prime Minister. I would be really interested in hearing why."
+        - At: 13:49 | 12/07/2018
+        Response: N/A (as of 13:50 | 12/07/2018)
+        Response: "Austerity that's why 
+                  Cut cut cut that's all you hear from these idiots 
+                  People have died because of benefits sanctions 
+                  Not building social housing 
+                  When torys in homeless always goes up 
+                  Not putting minimum wage up 
+                  And only available when 25 years old 
+                  And #Brexit disaster(as of 20:34 | 12/07/2018)
+          - Additional response actions: User followed the pretotyping account
+          - Response anger level: 0.8
+          - Action to take: Analyse topic, evaluate anger level and generate response
+          - Response topic: '['Brexit', 'social issues']'
+          - Response anger level evaluation: '{'anger_change': -0.2, 'respond_further': True}'
+          - Generated response: "I understand. So the problem is with various social issues and the Brexit. What do you think should be done about these matters?"
+            - At: 23:45 | 12/07/2018
+            - Response: N/A (as of 23:43 | 12/07/2018)
+            - Response: Mutiple responses to be seen at https://twitter.com/OpenDiscussion5/status/1017540503842312192
+              - Response anger level: 0.8
+              - Action to take: Analyse topic, evaluate anger level and generate response
+              - Response topic: ['Brexit', 'EU', various politically charged keywords] -> topic determined as 'politics'
+              - Response anger level evaluation: 0.65
+              - Response anger level evaluation: '{'anger_change': -0.15, 'respond_further': True}'
+              - NOTES: The user asks multiple times "who are you?", "are you a XYZ?"
+                - Idea: Add self-describing function to the bot to answer these?
+                        Something like "I am just a 'bot'/'independent observer'/'?' that participates in discussions around Twitter and I am interested in what people have to say.'."
+              - Generated response: "I am just an independent observer that participates in discussions around Twitter and I am interested in what people have to say. 
+                                    I see that you feel strongly about politics. What do you think is the solution to the things that you describe?"
+                - At: 03:56 | 14/07/2018
+                - Response: N/A (as of 03:57 | 14/07/2018)
+                - Multiple responses: https://twitter.com/OpenDiscussion5/status/1017965884676198400
+                - NOTES: Continued with narrative, mostly factual or semi-factual argumentative style. While OP definitely feels anger, the debate style is not riddled with profanities.
+                         Asked whether I am connected to Conservative party.
+Stopping searching for Tweets...
+Listening for replies...
+
+---===---===---===------===---===---===------===---===---===------===---===---===------===---===---===---
+
+Starting execution...
+Scanning Twitter for keyword: 'plastic ocean'
+Searching for angry Tweets...
+    - Tweet encountered: "I'm sick of this plastic ocean
+                          Drifting so far, from you
+                          I'm sick of this plastic emotion
+                          I wanna get back and love you"
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "Thoughts after watching Plastic Ocean: There’s plenty of fish in the sea, but there is also plenty of rubbish too."
+      Anger level: 0.05
+      Action: Continue
+    - Tweet encountered: "It’s good to get #aplasticocean on the radar in Indonesia, the second largest plastic ocean polluter on the planet."
+      Anger level: 0.1
+      Action: Continue
+    - Tweet encountered: "20 minutes into "A Plastic Ocean" and I can't go on to watch it anymore. 😞"
+      Anger level: 0.2
+      Action: Continue
+    - Tweet encountered: "Good, fuck these the fisherman and system that's destroying the now plastic ocean. Science says there will be no sea life by 2060..."
+      Anger level: 0.7
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: 'plastic ocean'
+      Extracted initial anger level: 0.7
+      Generated reply: "If I understand it correctly, you are upset about the problems with plastic ocean. Would you care to tell me more about it?"
+        - At: 14:25 | 12/07/2018
+      Response: N/A (as of 14:26 | 12/07/2018)
+Stopping searching for Tweets...
+Listening for replies...
+
+---===---===---===------===---===---===------===---===---===------===---===---===------===---===---===---
+
+Starting execution...
+Scanning Twitter for keyword: 'Trump'
+Searching for angry Tweets...
+    - Tweet encountered: "Meetings with Theresa May tomorrow are likely to be tense after @realDonaldTrump tells @TheSun that May’s plan for a “soft Brexit” 
+                          would likely scuttle a trade deal with the US. 
+                          POTUS also says Boris Johnson would make a great PM..."
+      Anger level: 0.3
+      Action: Continue
+    - Tweet encountered: "For shame @gop for shame. Taking a whole day to harrass someone about a text message to cover for trump while 
+                          THIS WHOLE ADMINISTRATION IS DESTROYING THIS COUNTRY YOU COMPLICIT FUCKS"
+      Anger level: 0.95
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: 'Trump'
+      Extracted initial anger level: 0.95
+      Generated reply: "I can see that you are angry about Trump and the whole administration. I would be happy to hear your reasons for this, if you have the time."
+        - At: 00:06 | 13/07/2018
+      Response: N/A (as of 00:07 | 13/07/2018)
+      Response: "Hahahaha! 😂🤣😂🤣" (at 1:37 | 13/07/2018)
+        - Additional response actions: None
+            - Response anger level: 0
+            - Action to take: Analyse topic, evaluate anger level and generate response
+            - Response topic: N/A
+            - Response anger level evaluation: '{'anger_change': -0.95, 'respond_further': False}'
+            - NOTES: This is a hard case to disengage. The best course of action for bot is not respond further which is easy to see by anger level change, but the disengagement_message
+                     (for example "Thank you for taking your time to discuss this with me") might seem as satirical and insulting due to the nature of response. Perhaps if the topic changes drastically 
+                     (jumping main category, not only subcategories) then do not disengage with message?
+    - Tweet encountered: "Trump says he feels "unwelcome" in London due to protests http://hill.cm/3WsYF5O"
+      Anger level: 0.1
+      Action: Continue
+    - Tweet encountered: "Somebody tell Matt Gaetz the only "deep state" is the place he, Gowdy, Jim Jordan, Devin Nunes, etc. get together up inside Trump's ass. #PeterStrozk #PeterStrozk"
+      Anger level: 0.65
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: 'Trump'
+      Extracted initial anger level: 0.65
+      Generated reply: "Hi. I would like to know what about Trump makes you upset, would you care to elaborate?"
+        - At: 00:11 | 13/07/2018
+      Response: N/A (as of 00:12 | 13/07/2018)
+      Response: ...
+    - Tweet encountered: "The theory that if we are nice to Trump he’ll be nice to us doesn’t seem to be going brilliantly... "
+      Anger level: 0.05
+      Action: Continue
+    - Tweet encountered: "A good test is would you leave your teenage daughter alone in a room with Donald Trump? If you would, then you perhaps shouldn't have had kids. 
+                          #bbcqt"
+      Anger level: 0.5 (??? What to do in these kind of situations when no anger is visibly present but discussion could be initiated?)
+      *Action: Unsure, not participating in debate as a bot, trying to see where participation leads as pretotyper
+        Test generated reply: "I can see that there are things about Trump that you do not like. Would you care to expand on these?"
+        Response to test reply: N/A (as of 00:18 on 13/07/2018)
+        Response to test reply: Twitter thread at https://twitter.com/haze2003purple/status/1017749312900620288
+        Notes about the interaction: 
+          - Multiple users engaged in discussion, OP did not so far (14:33 on 13/07/2018)
+          - There was multitude of opinions, out of 3 participating users one was pro-topic (pro-Trump) and two against
+          - The discussion that followed was not riddled with expletives but was managed in argumentative style with facts and evidence being presented and commented on
+          - The discussion appears to be still going on so more insights will be drawn at a later time. Participation is paused for now.
+        - AFTER SOME TIME OBSERVING DISCUSSION THAT FOLLOWED:
+          - The debate continues and is still very opinionated.
+          - The OP that the initial reply was made to has still not participated.
+          - Arguments are presented, sometimes more calmly, sometimes more heatedly.
+          - There is minimum of profanities but the debate is taking a more and more personal turn.
+          - The debate still revolves around original topic ('Trump') but follows a very specific path rather than talking about general concepts.
+          - There are no apparent ways for participation in debate from a bot perspective.
+          - Disengagement is possibly the best option.
+            - No disengagement message seems like a best strategy. (Too many parties and their debate probably still not over.)
+Stopping searching for Tweets...
+Listening for replies...
+
+---===---===---===------===---===---===------===---===---===------===---===---===------===---===---===---
+
+Starting execution...
+Scanning Twitter for keyword: 'Brexit'
+Searching for angry Tweets...
+    - Tweet encountered: "EU approach to Brexit summed up by Michel Barnier. "There is no justification for us to unravel what we are because the UK is leaving." "
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "There  seems to be something wrong with my twitter - where are all the Brexit fans  posting about a foreigner interfering with our Sovereign Government this morning? #fbpe"
+      Anger level: 0.05
+      Action: Continue
+    - Tweet encountered: "Ripped apart by the Brexit chaos they created
+                          Riddled with racism and dictated to by far right MPs
+                          Inept and weak leadership and cabinet falling apart. 
+                          Falling membership and no connection with the youth. 
+                          The Tory party is on it’s knees. Let’s put it out of it’s misery."
+      Anger level: 0.7
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: 'Brexit'
+      Extracted initial anger level: 0.7
+      Generated reply: "The way I understand it, you are upset because of the whole Brexit situation. Is that correct? I would love to hear more about why, if you'd like to elaborate."
+        - At: 15:13 | 13/07/2018
+        Response: N/A (as of 15:14 | 13/07/2018)
+    - Tweet encountered: "TRUMP WAS NOT OPENING TURNBERRY THE DAY BEFORE BREXIT"
+      Anger level: 0.1
+      Action: Continue
+    - Tweet encountered: "Still nothing from @LiamFox ??? He must be at home with his pants on his head, two pencils up his nose gibbering 'I do believe in Brexit!'"
+      Anger level: 0.25
+      Action: Continue
+    - Tweet encountered: "Fearful, craven, immoral, supplicatory. What a bright fucking future we’ve got. Fuck every bit of fuck out of Brexit."
+      Anger level: 0.85
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      NOTE: Responding to the same user twice with the same topic on different Tweets. 
+      Extracted topic: 'Brexit'
+      Extracted initial anger level: 0.85
+      Generated reply: "I can see that you are angry about the Brexit and the issues it brings. I'd be interested in hearing your reasons why, if you have the time."
+        - At: 15:26 | 13/07/2018
+        Response: N/A (as of 15:27 | 13/07/2018)
+    - Tweet encountered: "You didn’t predict Brexit the day before, you raving loon, you did that press conference the day after. He’s actually fucking insane."
+      Anger level: 0.8
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      NOTE: Responding to the same user twice with the same topic on different Tweets. 
+      Extracted topic: 'Brexit' (hopefully with lower confidence levels even though keyword present - triggered "unsure" mode)
+      Extracted initial anger level: 0.8
+      Generated reply: "Hi. I must admit that I have hard time grasping the topic of your Tweet. Could you elaborate on this a bit for me?"
+        - At: 15:31 | 13/07/2018
+        Response: N/A (as of 15:32 | 13/07/2018)
+Stopping searching for Tweets...
+Listening for replies...
+
+---===---===---===------===---===---===------===---===---===------===---===---===------===---===---===---
+
+Starting execution...
+Scanning Twitter for keyword: 'war'
+Searching for angry Tweets...
+      - Tweet encountered: "Today Trump claimed that The Sun was 'Fake News' for reporting on the words that came out of his mouth.
+                            The Sun & Fox News are owned by the same company.
+                            I can't wait until Fox News attacks The Sun for being fake, sparking a News Corp civil war.
+                            Should be fun to watch!"
+        Anger level: 0.25
+        Action: Continue
+      - Tweet encountered: "US citizens who work with a foreign power to “levy war against the United States” are guilty of Treason (Article III, US Constitution.) 
+                            It was the Russian *military* that levied the cyberattack charged in the grand jury indictment obtained by Mueller today. “War” or not? Hmmm. ."
+        Anger level: 0.1
+        Action: Continue
+      - Tweet encountered: "We are fighting a 2 front information war: One w/Putin trying to undermine our democracy and one w/ the GOP, trying to cover up the first."
+        Anger level: 0.1
+        Action: Continue
+      - Tweet encountered: "So, even though we KNOW that #Moron is illegitimate, no one will come out & say it because they know it would cause a huge civil war.  
+                            But @HillaryClinton  is the legitimate President. And most of us have known that since the election. #LastWord"
+        Anger level: 0.65
+        Action: Reply with discussion initiating message. Extract topic and store anger level.
+        Extracted topic: ['war', 'president', ?'election'?] -> a lot of potential topics and implied 'Trump' topic
+        Extracted initial anger level: 0.65
+        Generated reply: "Hi. I am not certain if I understand your thoughts correctly. Could you elaborate on them? Thanks."
+          - At: 04:20 | 14/07/2018
+          Response: N/A (as of 04:21 | 14/07/2018)
+Stopping searching for Tweets...
+Listening for replies...

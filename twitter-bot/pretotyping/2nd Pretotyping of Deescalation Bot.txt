@@ -1,0 +1,86 @@
+Starting execution...
+Scanning Twitter for keyword: 'Trump'
+Searching for angry Tweets...
+    - Tweet encountered: "To Iranian President Rouhani: NEVER, EVER THREATEN THE UNITED STATES AGAIN OR 
+                        YOU WILL SUFFER CONSEQUENCES THE LIKES OF WHICH FEW THROUGHOUT HISTORY HAVE EVER SUFFERED BEFORE. 
+                        WE ARE NO LONGER A COUNTRY THAT WILL STAND FOR YOUR DEMENTED WORDS OF VIOLENCE & DEATH. BE CAUTIOUS!"
+      Anger level: 0.8
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: ['Trump', 'politics', 'war'] -> Trump wrote Tweet and searched for by keyword, 
+                                                       politics would most likely be predicted, war as a superset of 'conflict'
+      Extracted initial anger level: 0.8
+      NOTES: Multitude of topics extracted, will try to engage with non-specific initiation
+      Generated reply: "Why so angry?"
+        - At: 7:16 | 23/07/2018
+      Response: N/A (as of 12:30 | 24/07/2018)
+    - Tweet encountered: I don’t find any of this funny.
+                        The fucking traitors who’ve allowed this madman to become president are putting my family and yours in danger. 
+                        Fuck them. Fuck Trump. Fuck the Republican Party."
+      Anger level: 1
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: ['Trump', 'politics', 'president'] 
+      Extracted initial anger level: 1
+      Generated reply: "I see that you are quite angry about Trump. Why so?"
+        - At: 7:46 | 23/07/2018
+      Response:  N/A (as of 12:30 | 24/07/2018)
+    - Tweet encountered: "I see many trolls on the left creating hysteria and hate for Republicans/conservatives.
+                          Many trump supporters are good people, average Americans and will come round once the trials begin. 
+                          They have been fed a very different version of the news and much political propoganda."
+      Anger level: 0.2
+      Action: Continue
+    - Tweet encountered: "FUCK NOVA, FUCK THE ADVISORS, FUCK THE ADMINISTRATORS, FUCK COLLEGE, FUCK SCHOOL, 
+                          FUCK THE STUPID EXPENSIVE EDUCATION SYSTEM, FUCK TRUMP, FUCK THSSE UNFAIR ASS FEES 
+                          WE HAVE TO PAY FOR SCHOOL, FUCK PAYING FOR PARKING, 
+                          IM TIGHTER THEN A PAIR OF EXTRA SKINNY JEANS ON A FAT KID RN
+      Anger level: 1
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: ['Trump', 'education'] 
+      Extracted initial anger level: 1
+      Generated reply: "Whoa, why so angry about the Trump and education?"
+        - At: 7:16 | 23/07/2018
+      Response:  N/A (as of 12:30 | 24/07/2018)
+
+
+---===---===---===------===---===---===------===---===---===------===---===---===------===---===---===---
+
+Starting execution...
+Scanning Twitter for keyword: 'Brexit'
+Searching for angry Tweets...
+    - Tweet encountered: "EU citizens in UK at risk of 'devastating consequences' on housing and jobs after Brexit, MPs warn"
+      Anger level: 0.05
+      Action: Continue
+    - Tweet encountered: "7 truly alarming things that have been said about Brexit this weekend"
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "Don’t know about anyone else, but you know what? I’m sick of hearing I must respect something I despise, 
+                          because people I despise say I should, in case other people I despise, 
+                          who backed the whole shit show in the first place get angry!
+                          I’M FUCKING ANGRY!
+                          BREXIT? FUCK RIGHT OFF!"
+      Anger level: 0.85 
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: ['Brexit'] 
+      Extracted initial anger level: 0.85
+      Generated reply: "I see you feel quite strongly about this Brexit thing, what angers you so much?"
+        - At: 8:30 | 23/07/2018
+      Response: N/A (as of 12:30 | 24/07/2018)
+    - Tweet encountered: "we do not yet know what Brexit will look like? think again. We do.
+                          1 Lower Food standards to replace EU trade with US
+                          2 Lower regulation on financial transactions so that City can play monopoly with our pensions money
+                          3 Reduced employment rights to secure UK competes with non EU"
+      Anger level: 0
+      Action: Continue
+    - Tweet encountered: "Time to resign Mrs May! Or change drastically your attitude to Brexit. Dear Tories, you fuck the country and you are fucked for generations to come! "
+      Anger level: 0.7
+      Action: Reply with discussion initiating message. Extract topic and store anger level.
+      Extracted topic: ['Brexit'] (potentially also 'Prime Minister') 
+      Extracted initial anger level: 0.7
+      Generated reply: "The whole Brexit situation is pretty upsetting, isn't it? How do you think things could get better?"
+        - At: 8:45 | 23/07/2018
+      Response: N/A (as of 15:55 | 23/07/2018)
+      Response: "The only option is to stop this madness. Revoke article 50 before it's too late #ExitFromBrexit"
+        Response Anger level: 0.05
+        NOTES: OP liked the response Tweet. One more user participated. https://twitter.com/Rosaflo23251884/status/1021441960454905857
+               The discussion is rather calm.
+        Action: ??? 
+      

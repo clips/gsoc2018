@@ -1,15 +1,8 @@
-import os
 import pickle
 import numpy as np
 import pandas as pd
 
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
-#from keras.wrappers.scikit_learn import KerasClassifier
-from keras.losses import binary_crossentropy, categorical_crossentropy
-from keras.utils.vis_utils import plot_model
-#from keras.metrics import binary_accuracy, categorical_accuracy
-from keras import metrics as mets
+from keras.layers import Dense, Dropout, Flatten, 
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import Embedding
@@ -20,11 +13,10 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
 
 # Loading and cleaning the data
-tweets_data = pd.read_csv('final_dataset.csv', index_col=False, names=['tweet_id', 'text', 'topic', 'anger'], encoding = 'unicode-escape')
-tweets_data.drop(['tweet_id','anger'], axis=1, inplace=True) 
+tweets_data = pd.read_csv('final_dataset.csv', index_col=False, names=['text', 'topic', 'anger'], encoding = 'unicode-escape')
+tweets_data.drop(['anger'], axis=1, inplace=True) 
 tweets_data = tweets_data.dropna()
 
 # Get tokenized version of the tweets
@@ -35,7 +27,7 @@ encoded = tokenizer.texts_to_sequences(tweets_data['text'])
 length = 250
 padded = pad_sequences(encoded, maxlen=length, padding='post')
 # saving tokenize
-with open('multichannel_cnn_tokenizer.pickle', 'wb') as handle:
+with open('topic_tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Testing model with encoded data
@@ -50,8 +42,8 @@ label_encoder.fit(Y)
 encoded_Y = label_encoder.transform(Y)
 
 # saving tokenize
-with open('multichannel_cnn_label_encoder.pickle', 'wb') as handle:
-    pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+with open('topic_label_encoder.pickle', 'wb') as handle:
+    pickle.dump(label_encoder, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # convert integers to dummy variables (i.e. one hot encoded)
 Y = np_utils.to_categorical(encoded_Y)
@@ -84,24 +76,24 @@ def define_multichannel_cnn_model(length, vocab_size):
     concatenated = concatenate([flatten_1, flatten_2, flatten_3])
     # interpretation
     dense = Dense(10, activation='relu')(concatenated)
-    outputs = Dense(9, activation='sigmoid')(dense)
+    outputs = Dense(9, activation='softmax')(dense)
     model = Model(inputs=[inputs_1, inputs_2, inputs_3], outputs=outputs)
     # compile
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     # summarize
-    print('Multichannel CNN:\n')
-    model.summary()
-#	plot_model(model, show_shapes=True, to_file='multichannel.png')
+    # print('Multichannel CNN:\n')
+    # model.summary()
+    # plot_model(model, show_shapes=True, to_file='multichannel.png')
     return model
 
-X_train, X_test, Y_train, Y_test = train_test_split(padded, Y, test_size=0.2, random_state=42)
-X_train, X_dev, Y_train, Y_dev = train_test_split(X_train, Y_train, test_size=0.2, random_state=42)
+X_train, X_test, Y_train, Y_test = train_test_split(padded, Y, test_size=0.1, random_state=42)
+X_train, X_dev, Y_train, Y_dev = train_test_split(X_train, Y_train, test_size=0.1, random_state=42)
 
 model = define_multichannel_cnn_model(length, vocab_size)
 
 import time
 start_time = time.time()
-model.fit([X_train, X_train, X_train], Y_train, epochs=10, batch_size=32, validation_data=([X_dev, X_dev, X_dev], Y_dev))
+model.fit([X_train, X_train, X_train], Y_train, epochs=20, batch_size=32, validation_data=([X_dev, X_dev, X_dev], Y_dev))
 end_time = time.time()
 training_time = end_time - start_time
 
@@ -116,10 +108,10 @@ loss, acc = model.evaluate([X_test,X_test,X_test], Y_test, verbose=0)
 print('Test Loss: %f' % loss)
 print('Test Accuracy: %f' % (acc*100))
 
-model.save('multichannel_cnn_model.h5')
+model.save('topic_analysis_model.h5')
 
 # manual model testing
-encoded_test_input = tokenizer.texts_to_sequences(['I love being a vegan'])
+encoded_test_input = tokenizer.texts_to_sequences(['This is a sample text to predict topic and anger level of. Should be a string in a list.'])
 test_input = pad_sequences(encoded_test_input, maxlen=length, padding='post')
 
 predictions = model.predict([test_input, test_input, test_input])
@@ -141,73 +133,3 @@ for prediction in predictions[0]:
 prediction = np.argmax(predictions, axis=1)
 prediction = label_encoder.inverse_transform(prediction)
 print(prediction)
-
-
-
-#
-#
-## Splitting into data and labels
-#Y = data.iloc[:,-1]
-#X = data.drop(data.columns[-1], axis = 1)
-#
-## Transform X into respective ngrams an chngrams
-#X['text'] = X['text'].apply(lambda x:_tokenize(x))
-#X_1_chngram = X_2_chngram = X_3_chngram = X_1_ngram = X_2_ngram = X
-#X_1_chngram['text'] = X_1_chngram['text'].apply(lambda x: chngramize(x, 1))
-#X_2_chngram['text'] = X_2_chngram['text'].apply(lambda x: chngramize(x, 2))
-#X_3_chngram['text'] = X_3_chngram['text'].apply(lambda x: chngramize(x, 3))
-#X_1_ngram['text'] = X_1_ngram['text'].apply(lambda x: ngramize(x, 1))
-#X_2_ngram['text'] = X_2_ngram['text'].apply(lambda x: ngramize(x, 2))
-#
-#
-#X_matrix = X.as_matrix()
-#X_1_chngram_matrix = X_1_chngram.as_matrix()
-#X_2_chngram_matrix = X_2_chngram.as_matrix()
-#X_3_chngram_matrix = X_3_chngram.as_matrix()
-#X_1_ngram_matrix = X_1_ngram.as_matrix()
-#X_2_ngram_matrix = X_2_ngram.as_matrix()
-#Y_matrix = Y.as_matrix()
-#
-#input_shape = X_matrix[1].shape # for Keras input layer
-#num_outputs = 1 # binary classification
-#
-## Splitting data into train, dev and test sets
-#X_1_chngram_train, X_1_chngram_test, Y_train, Y_test = train_test_split(X_1_chngram_matrix, Y_matrix, test_size=0.2, random_state=42)
-#X_1_chngram_train, X_1_chngram_dev, Y_train, Y_dev = train_test_split(X_1_chngram_train, Y_train, test_size=0.2, random_state=42)
-#
-#X_2_chngram_train, X_2_chngram_test, Y_train, Y_test = train_test_split(X_2_chngram_matrix, Y_matrix, test_size=0.2, random_state=42)
-#X_2_chngram_train, X_2_chngram_dev, Y_train, Y_dev = train_test_split(X_2_chngram_train, Y_train, test_size=0.2, random_state=42)
-#
-#X_3_chngram_train, X_3_chngram_test, Y_train, Y_test = train_test_split(X_3_chngram_matrix, Y_matrix, test_size=0.2, random_state=42)
-#X_3_chngram_train, X_3_chngram_dev, Y_train, Y_dev = train_test_split(X_3_chngram_train, Y_train, test_size=0.2, random_state=42)
-#
-#X_1_ngram_train, X_1_ngram_test, Y_train, Y_test = train_test_split(X_1_ngram_matrix, Y_matrix, test_size=0.2, random_state=42)
-#X_1_ngram_train, X_1_ngram_dev, Y_train, Y_dev = train_test_split(X_1_ngram_train, Y_train, test_size=0.2, random_state=42)
-#
-#X_2_ngram_train, X_2_ngram_test, Y_train, Y_test = train_test_split(X_2_ngram_matrix, Y_matrix, test_size=0.2, random_state=42)
-#X_2_ngram_train, X_2_ngram_dev, Y_train, Y_dev = train_test_split(X_2_ngram_train, Y_train, test_size=0.2, random_state=42)
-#
-##X_1_chngram_train = X_1_chngram_train.reshape((1, len(X_1_chngram_train)))
-#
-#input_shape = (X_1_chngram_train.shape[0],)
-#
-#model = Sequential()
-#model.add(Dense(24, activation='relu', input_shape=(X_1_chngram_train.shape[1],), kernel_initializer='uniform'))
-#model.add(Dense(24, activation='relu'))
-#model.add(Dense(24, activation='relu'))
-#model.add(Dense(24, activation='relu'))
-#model.add(Dense(num_outputs, activation='sigmoid'))
-#model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-#
-#model.fit(X_1_chngram_train, Y_train, epochs=50, validation_data=(X_1_chngram_dev, Y_dev))
-
-                
-#
-#model = Sequential()
-#model.add(Dense(64, activation='relu', input_shape=(X_matrix.shape[1],), kernel_initializer='uniform'))
-#model.add(Dense(32, activation='relu'))
-#model.add(Dense(1, activation='softmax'))
-#model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-#
-#model.fit(X_matrix, Y_matrix, epochs=50)
-

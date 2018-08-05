@@ -29,10 +29,12 @@ async function generate(seedSketch, loadSketch, conditional_variables, callback)
 
 // Conecting to Twitter and listening for calls
 var stream = T.stream('statuses/filter', { track: ['#DeescalationBot']});
+// var tweetToAnalyse = 'This is a sample angry tweet about European Union';
 
 // Listen for a call to action and respond to it in thread
 var botResponse = '';
 
+requestBody = { 'text': 'United States are in direct conflict with European Union'}
 request({
     method: 'POST',
     url: localhost + 'analyse/topic',
@@ -55,10 +57,13 @@ request({
             }
         }
 
+        console.log(probabilities[0]);
+
         console.log(`Topic has been analysed as '${highestPrediction}' with probability ${highestPredictionProbability}.`);
     }
 });
 
+requestBody = { 'text': 'United States are in direct conflict with European Union'}
 request({
     method: 'POST',
     url: localhost + 'analyse/anger',

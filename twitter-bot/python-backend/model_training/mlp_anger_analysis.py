@@ -1,34 +1,18 @@
-import os
 import pickle
-import numpy as np
 import pandas as pd
 import time
 
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
-from keras.losses import binary_crossentropy, categorical_crossentropy
 #from keras.metrics import binary_accuracy, categorical_accuracy
-from keras import metrics as mets
-from keras.models import Model
-from keras.layers import Input
 from keras.layers import Embedding
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
-
-from grasp import cd
-from grasp import tokenize 
-from grasp import chngrams
-from grasp import ngrams
 
 # Loading and cleaning the data
-tweets_data = pd.read_csv(cd('twitter_data.csv'), index_col=False, names=['original_index','tweet_id', 'text', 'topic', 'anger'])
-tweets_data.drop(['original_index','tweet_id','topic'], axis=1, inplace=True) 
-tweets_data = tweets_data.query('not(anger > 1)')
-tweets_data = tweets_data[tweets_data.text.str.contains('I liked a @YouTube') == False] # getting rid of some commonly occuring fluff text
-tweets_data = tweets_data.dropna()
+tweets_data = pd.read_csv('anger_dataset.csv', index_col=False, encoding='unicode_escape')
 
 # Get tokenized version of the tweets
 tokenizer = Tokenizer()
@@ -206,8 +190,8 @@ def define_model_eight(length, vocab_size):
     #	plot_model(model, show_shapes=True, to_file='multichannel.png')
     return model
 
-X_train, X_test, Y_train, Y_test = train_test_split(padded, Y, test_size=0.2, random_state=42)
-X_train, X_dev, Y_train, Y_dev = train_test_split(X_train, Y_train, test_size=0.2, random_state=42)
+X_train, X_test, Y_train, Y_test = train_test_split(padded, Y, test_size=0.1, random_state=42)
+X_train, X_dev, Y_train, Y_dev = train_test_split(X_train, Y_train, test_size=0.1, random_state=42)
 
 model_one = define_model_one(length, vocab_size)
 model_two = define_model_two(length, vocab_size)
@@ -393,11 +377,9 @@ print('Best train accuracy: %f achieved with Model_%d\n' % (best_train_acc, best
 print('Best test loss: %f achieved with Model_%d\n' % (best_test_loss, best_test_loss_model))
 print('Best test accuracy: %f achieved with Model_%d\n' % (best_test_acc, best_test_acc_model))
 
-
-
-
 # manual model testing
-encoded_test_input = tokenizer.texts_to_sequences(['text to predict'])
+encoded_test_input = tokenizer.texts_to_sequences(['This is a sample text to predict topic and anger level of. Should be a string in a list.'])
 test_input = pad_sequences(encoded_test_input, maxlen=length, padding='post')
 
 prediction = model_one.predict(test_input)
+print(prediction)

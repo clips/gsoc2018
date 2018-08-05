@@ -1,8 +1,7 @@
 import sys
 
 import topic_analyser
-import sentiment_analyser
-import paraphrasing_module
+import anger_analyser
 
 from flask import Flask, jsonify, request
 
@@ -17,18 +16,14 @@ app = Flask(__name__)
 def analyse_topic():
     """ """
     json = request.get_json()
-    method = json['method']
     text = json['text']
 
-    # Mock variable setting
-    # method = 'nmf'
-    # text = 'Sample text about president'
-
-    topics = topic_analyser.analyse(method, text)
+    topics, probabilities = topic_analyser.analyse(text)
     
-    return jsonify({'topics': topics}), 200
+    return jsonify({'predictions': list(topics), 'probabilities': str(list(probabilities))})
+    # return {'topics': topics, 'probabilities': probabilities}, 200
 
-@app.route('/analyse/sentiment', methods=['POST'])
+@app.route('/analyse/anger', methods=['POST'])
 def analyse_sentiment():
     """ """
     json = request.get_json()
@@ -37,20 +32,21 @@ def analyse_sentiment():
     # Mock variable setting
     # text = 'Sample text about president'
 
-    sentiments, probabilities = sentiment_analyser.analyse(text)
+    anger = anger_analyser.analyse(text)
 
-    return jsonify({'sentiments': sentiments, 'probabilities': probabilities}), 200
-
-@app.route('/paraphrase', methods=['POST'])
-def paraphrase():
-    """ """
-    json = request.get_json()
-    text = json['text']
-
-    paraphrased_pairs = paraphrasing_module.paraphrase(text)
-
-    # paraphrased_pairs containt pairs of original and paraphrased phrases
-    return jsonify({'paraphrased_pairs': paraphrased_pairs}), 200
+    return jsonify({'prediction': str(anger[0])})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
+
+# @app.route('/paraphrase', methods=['POST'])
+# def paraphrase():
+#     """ """
+#     json = request.get_json()
+#     text = json['text']
+
+#     paraphrased_pairs = paraphrasing_module.paraphrase(text)
+
+#     # paraphrased_pairs containt pairs of original and paraphrased phrases
+#     return jsonify({'paraphrased_pairs': paraphrased_pairs}), 200
+

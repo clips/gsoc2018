@@ -14,14 +14,11 @@ from keras.layers import Input
 from keras.layers import Embedding
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.metrics import top_k_categorical_accuracy
 
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
-
 # Loading and cleaning the data
-tweets_data = pd.read_csv('final_dataset.csv', index_col=False, names=['tweet_id', 'text', 'topic', 'anger'], encoding = 'unicode_escape')
-tweets_data.drop(['tweet_id','anger'], axis=1, inplace=True) 
+tweets_data = pd.read_csv('final_dataset.csv', index_col=False, names=['text', 'topic', 'anger'], encoding = 'unicode-escape')
+tweets_data.drop(['anger'], axis=1, inplace=True) 
 tweets_data = tweets_data.dropna()
 
 # Get tokenized version of the tweets
@@ -406,7 +403,7 @@ print('Best test accuracy: %f achieved with Model_%d\n' % (best_test_acc, best_t
 l,a=model_one.evaluate(X_test, Y_test, verbose=1)
 
 # manual model testing
-encoded_test_input = tokenizer.texts_to_sequences([''])
+encoded_test_input = tokenizer.texts_to_sequences(['This is a sample text to predict topic and anger level of. Should be a string in a list.'])
 test_input = pad_sequences(encoded_test_input, maxlen=length, padding='post')
 
 predictions = model_one.predict(X_test)

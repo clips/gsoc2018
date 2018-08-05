@@ -190,26 +190,8 @@ correct_pred_sum = np.sum(np.diagonal(conf_mat))
 accuracy = (correct_pred_sum / conf_mat_sum ) * 100
 print("Accuracy: ", accuracy)
 
-samples = ["I am angry about the United States of America government",
-         "Governmental issues do not concern me at all",
-         "The situation with food shortage in Africa is frightening",
-         "Famine is still a problem in developing countries",
-         "We cannot ignore the threat of global warming any longer!",
-         "The average temperature is not rising because of humans",
-         "Universities are implementing new policies",
-         "The tuition fees are ridiculous!",
-         "Scientific reasearch attests to climatic changes on this planet",
-         "Democracy has failed",
-         "Minarchism is my preferred approach to defining state",
-         "Being Vegetarian is about compassion",
-         "We need more leaders in public institutions",
-         "World Cup in Russia proved that it is still a popular game",
-         "I am so happy about the results!",
-         "That was a beautiful match",
-         "New technologies are helping humans to progress",
-         "I am looking forward to seeing that beautiful city",
-         "Democracy is bad",
-         "Democracy sucks"]
+samples = ["Text to predict",
+           "Another text to predict"]
 
 #samples = ["I am doing some grocery shopping today",
 #           "I stumbled on a chair and broke my leg"]

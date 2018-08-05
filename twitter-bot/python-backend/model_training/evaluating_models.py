@@ -355,7 +355,6 @@ print('Multichannel CNN Test Accuracy: %f' % (multichannel_test_acc*100))
 
 
 
-
 train_losses = [model_one_train_loss, model_two_train_loss, model_three_train_loss, model_four_train_loss, 
                 model_five_train_loss, model_six_train_loss, model_seven_train_loss, model_eight_train_loss,
                 multichannel_train_loss]
@@ -421,16 +420,3 @@ print('Best train loss: %f achieved with Model_%d\n' % (best_train_loss, best_tr
 print('Best train accuracy: %f achieved with Model_%d\n' % (best_train_acc, best_train_acc_model))
 print('Best test loss: %f achieved with Model_%d\n' % (best_test_loss, best_test_loss_model))
 print('Best test accuracy: %f achieved with Model_%d\n' % (best_test_acc, best_test_acc_model))
-
-#from grasp import chngrams
-#from grasp import ngrams
-#
-#
-#def ngramize(s,n):
-#    return list(ngrams(s,n))
-#testing = X_test['text'].apply(lambda x: ngramize(str(x), 2))
-#
-#testing = []
-#
-#for line in padded:
-#    testing.append(ngramize(line,2))
