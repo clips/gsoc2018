@@ -1,0 +1,42 @@
+%import topic.txt as topic
+
+root:
+- {{ greeting | sentence }}. {{ statement | sentence }}
+- {{ statement |sentence }}
+
+greeting:
+- hi
+- hello
+
+statement:
+- I see that you are feeling {{ sentiment }} {{ about }}, {{ ask_reasons }}
+- ([anger < 0.7]) I see that you are feeling a bit {{ sentiment }} {{ about }}, {{ ask_reasons }}
+- why are you so {{ sentiment }} {{about}}?
+- why so {{ sentiment }}?
+
+ask_reasons:
+- I'd be interested in hearing why.
+- I would love to know why.
+- why?
+- what are your reasons for this?
+- care to explain why?
+
+about:
+- about all this
+- about the whole {{ topic }} thing
+- about {{ topic }}
+
+
+sentiment:
+- ([(anger > 0.5) && (anger < 0.6)]) upset
+- ([(anger > 0.5) && (anger < 0.6)]) bothered
+- ([(anger > 0.5) && (anger < 0.6)]) annoyed
+- ([(anger > 0.6) && (anger < 0.7)]) irritated
+- ([(anger > 0.6) && (anger < 0.7)]) disturbed
+- ([(anger > 0.7) && (anger < 0.8)]) vexed
+- ([(anger > 0.7) && (anger < 0.8)]) indignant
+- ([(anger > 0.8) && (anger < 0.9)]) exasperated
+- ([anger > 0.8]) enraged
+- ([anger > 0.9]) furious
+- ([anger > 0.9]) outraged
+- angry

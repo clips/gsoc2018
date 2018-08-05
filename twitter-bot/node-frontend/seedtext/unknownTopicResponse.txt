@@ -1,0 +1,29 @@
+%import topic.txt as topic
+
+root:
+- {{ i_apologize | sentence }} but I am {{ unsure }} what {{ trying_to_say }} by all this. Could you elaborate a little?
+- I am not following. What is it you are {{ trying_to_say }}?
+- What do you mean?
+- I am {{ unsure }} about what {{ trying_to_say }} here.                         
+- I am {{ unsure }} what this debate is even about, to be honest.
+
+i_apologize:
+- sorry
+- I am sorry
+- I apologize
+- excuse me
+
+unsure:
+- unsure
+- uncertain
+- a bit uncertain
+- not too sure
+
+trying_to_say:
+- you're saying
+- you're trying to say
+- you're meaning to say
+- you're wanting to say
+- you try to say
+- mean to say
+- want to say
