@@ -4,8 +4,6 @@
 
 The user must register/login in order to be able to use the application. This is meant to keep user&#39;s anonymization configuration and TF-IDF knowledge-bases private.
 
-#
-
 ## Dashboard:
 
 On the dashboard, the user has access to all the application&#39;s functionalities.
@@ -19,19 +17,17 @@ i) Configure the anonymization action
 
 ii) Set a way for the attribute to be detected.
 
-#
+
 
 **i) Configuring the anonymization / Adding an attribute:**
 
-#
 
 1) Click on &quot;Add Attribute&quot;
 
-#
 
-#
-
+![](screenshots/2.png)
 _Choosing the kind of anonymization_
+
 
 2) Select the kind of anonymization you want
 
@@ -39,7 +35,9 @@ _Choosing the kind of anonymization_
 
 To be used in certain cases where retaining a part of the attribute through the other anonymization methods too is not appropriate. Completely replaces the attribute with a pre-set replacement. Example: My name is John Doe would be replaced by My name is \&lt;Name\&gt;.
 
+![](screenshots/deletion_config.png)
 _Choosing replacement string for deletion_
+
 
 When choosing deletion, you need to provide the system with a replacement string.
 
@@ -50,6 +48,7 @@ When choosing deletion, you need to provide the system with a replacement string
 - Word Vector Based: In this option of generalization, the nearest neighbor of the word in the vector space is utlilized to generalize the attribute. Example: I live in India get&#39;s generalized to I live in Pakistan. This method, while completely changing the word largely retains vector space information useful in most NLP and Text Processing tasks
 - Part Holonym Based: In this option, the system parses the [Wordnet Lexical Database](https://wordnet.princeton.edu/) to extract part holonyms. This method works exceptionally well with geographical entities. In this, the user can choose the level of generalization. Example: I live in Beijing get&#39;s generalized to I live in China at level 1 generalization and to I live in Asia at level 2 of generalization.
 
+![](screenshots/gen_config.png)
 _Choosing the generalization type_
 
 2.3) Suppression:
@@ -61,6 +60,7 @@ The user get&#39;s to choose between two types of suppressions and the replaceme
 - Percentage to be suppressed: Suppresses the given percentage of bits
 - Number of bits to be suppressed: Suppresses the given number of bits. If the number of bits configured to be suppressed exceeds the number of bits in the text, the entire text is replaced with the bits.
 
+![](screenshots/supp_config.png)
 _Configuring suppression_
 
 **ii) Set a way for the attribute to be detected**
@@ -73,16 +73,14 @@ For example: The entity &quot;Location&quot; could be tagged as &quot;GPE&quot; 
 
 You can add an alias by clicking on &quot;Add Alias&quot; next to an attribute on the Dashboard.
 
-
-
-#
-
+![](screenshots/add_alias.png)
 _Adding an alias for an attribute_
 
 _2)_ Adding a regex pattern for an attribute In case NER systems do not have support for the kind of attribute you wish to detect, you can add custom regex patterns to help tag/identify the attribute.
 
 For example: Adding regex patterns for Email IDs or URLs etc.
 
+![](screenshots/add_regex.png)
 _Adding a regex pattern for email_
 
 _3)_ Detecting Attributes using TF-IDF: The third method in which the system detects attributes/tokens that have to be anonymized is by using TF-IDF. The system assigns TF-IDF scores to tokens in order to determine their importance. Tokens above a certain limit will directly be deleted. Since TF-IDF helps us determine only whether or not an attribute is sensitive but not what kind of an attribute is something, the system currently only support deletion of the same. Adding documents to the TF-IDF knowledge base is covered later in this guide.
@@ -98,13 +96,14 @@ This system offers multiple options for text to be anonymized.
 The user can directly enter the text he wishes to be anonymized in a box
 
 
-
+![](screenshots/anonymize.png)
 _Anonymizing text entered_
 
 1.2) By uploading a file:
 
 In case the user wishes to anonymize text in an uploaded file, the user can do that too. The uploaded file will NOT be saved on the server.
 
+![](screenshots/anonymize_file_gui.png)
 _Uploading a file to be anonymized_
 
 2) Through API:
@@ -121,9 +120,8 @@ To directly make a POST request, the url is /anonymize\_text\_api/ and in the Bo
 
 In case, you wish to get token level details, make the request to: /token\_level\_api/
 
+![](screenshots/token_level_api.png)
 _Token level API response_
-
-
 
 
 
@@ -137,11 +135,11 @@ The response is by default at the token level.
 
 #
 
-#
+
 
 ## Adding a file/text to the TF--IDF Knowledgebase
 
-#
+
 
 1) Via GUI:
 
@@ -171,10 +169,11 @@ The API endpoints use system generated tokens for authentication. At the API Tok
 
 Do not share your API Authentication token with other users. It is sensitive information, like your password.
 
+![](screenshots/token_management.png)
 _Authentication Token Management Page_
 
 ## Resetting to Defaults
 
-#
+![](screenshots/reset_setup.png)
 
 The user can discard all configurations and reset the application to default.
