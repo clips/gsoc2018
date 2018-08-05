@@ -1,0 +1,79 @@
+root:
+- {{ adj }} {{ noun }} 
+- {{ adj }} {{ noun }} 
+- {{ adj }} and {{ adj }}
+- {{ noun }} of the {{ noun }} 
+- {{ noun }} {{ noun }} 
+- {{ name }} and the {{ noun }}
+
+adj:
+- Detached
+- Scared
+- Drunk
+- Condemned
+- Navy
+- Tortured
+- Bleeding
+- Eternal
+- Burned
+- Greedy
+- Damp
+- Buried
+- Punk
+- Slain
+- Forgotten
+- Wretched
+- Acid
+- Hateful
+- Rotten
+- Feral
+- Creeping
+- Mortal
+
+noun:
+- Moon
+- Sun
+- Wolf
+- Wreck
+- Poodle
+- Pigeon
+- Crows
+- Camel
+- Smoke
+- Clown
+- Hamster
+- Soul
+- Heart
+- Veins
+- Cries
+- Lust
+- Delusion
+- Mutiny
+- Serpent
+- Circus
+- Chant
+- Choir
+- Mime
+- Graveyard
+- Bowels
+- Smurf
+- Corpse
+- Utopia
+- Havoc
+- Placebo
+- Widow
+- Coma
+- Breed
+- Haze
+
+name:
+- Oscar
+- Dave
+- Brian
+- Kelly
+- Tina
+
+font:
+- Pirata One
+- Metal Mania
+- Piedra

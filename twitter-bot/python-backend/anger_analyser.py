@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 
 from keras.layers import Dense, Dropout, Flatten
+#from keras.metrics import binary_accuracy, categorical_accuracy
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import Embedding
@@ -44,28 +45,25 @@ def define_multichannel_cnn_model(length, vocab_size):
     concatenated = concatenate([flatten_1, flatten_2, flatten_3])
     # interpretation
     dense = Dense(10, activation='relu')(concatenated)
-    outputs = Dense(9, activation='softmax')(dense)
+    outputs = Dense(1, activation='sigmoid')(dense)
     model = Model(inputs=[inputs_1, inputs_2, inputs_3], outputs=outputs)
     # compile
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     # summarize
     # print('Multichannel CNN:\n')
     # model.summary()
-    # plot_model(model, show_shapes=True, to_file='multichannel.png')
+#	plot_model(model, show_shapes=True, to_file='multichannel.png')
     return model
 
 def analyse(tweet):
-    """Method that loads in tokenizer, label_encoder and model and uses these to make a prediction on a passed in string."""
+    """Method that loads in tokenizer and model and uses these to make a prediction on a passed in string."""
     # Needs to be passed in as a list 
+    print('Tweet to analyse: ', tweet)
     tweet = [tweet]
     # loading the Tokenizer
     tokenizer = None
-    with open('models/topic_tokenizer.pickle', 'rb') as handle:
+    with open('models/anger_tokenizer.pickle', 'rb') as handle:
         tokenizer = pickle.load(handle)
-    #loading label_encoder
-    label_encoder = None
-    with open('models/topic_label_encoder.pickle', 'rb') as handle:
-        label_encoder = pickle.load(handle)
 
     vocab_size = len(tokenizer.word_index) + 1
     encoded_tweet = tokenizer.texts_to_sequences(tweet)
@@ -73,18 +71,8 @@ def analyse(tweet):
     padded_tweet = pad_sequences(encoded_tweet, maxlen=length, padding='post')
 
     multichannel_cnn = define_multichannel_cnn_model(length, vocab_size)
-    multichannel_cnn.load_weights('models/topic_analysis_model.h5')
+    multichannel_cnn.load_weights('models/anger_analysis_model.h5')
     # evaluate model on training dataset
-    predictions = multichannel_cnn.predict([padded_tweet, padded_tweet, padded_tweet], verbose=1)
-
-#    prediction = np.argmax(predictions, axis=1)
-#    prediction = label_encoder.inverse_transform(predictions)
-
-    predictions_dict = {}
-    index = 0
-    for prediction in predictions[0]:
-        label = label_encoder.inverse_transform(index)
-        predictions_dict[label] = prediction  
-        index = index + 1
-        
-    return predictions_dict.keys(), predictions_dict.values()
+    prediction = multichannel_cnn.predict([padded_tweet,padded_tweet,padded_tweet], verbose=1)
+    print('Anger predicted as: ', prediction[0])
+    return prediction[0]

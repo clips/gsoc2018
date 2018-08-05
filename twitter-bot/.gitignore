@@ -1,7 +1,14 @@
 *.pyc
 *.sqlite3
+*/node_modules
 /node_modules
-/datasets
 things-to-discuss.md
 auth.js
-*/auth.js
+**/auth.js
+**/auth.py
+*.h5
+*.pickle
+grasp.py
+*/obsolete_classifiers
+*.job
+/playground
