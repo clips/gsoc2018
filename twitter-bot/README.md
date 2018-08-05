@@ -67,13 +67,3 @@ The frontend is fueled by Javascript. The majority of the relevant code can be s
 
 ### Seed:
 Seed is a JavaScript application (also available as a Node.js module - [SeedText](https://www.npmjs.com/package/seedtext) used for seeded pseudo-random procedural content generation. It uses its own microlanguage for guiding the generation and the whole documentation for this can be seen in [its GitHub repository](https://github.com/nodebox/seed "Seed GitHub Repo"). 
-
-## Acknowledgement:
-
-For creation of he anger-analysing model, some data from [Hate Speech Identification](https://data.world/crowdflower/hate-speech-identification/workspace/project-summary) dataset was used. I would like to thank this way to the creators of this dataset - Thomas Davidson, Dana Warmsley, Michael Macy and Ingmar Weber - for making this dataset publicly available. The Hate Speech Identification dataset has been published as part of 
-
-```
-Thomas Davidson, Dana Warmsley, Michael Macy, and Ingmar Weber. 2017. "Automated Hate Speech Detection and the Problem of Offensive Language." Proceedings of the 11th International Conference on Web and Social Media (ICWSM). 
-```
-
-and can be found [here](https://aaai.org/ocs/index.php/ICWSM/ICWSM17/paper/view/15665).
