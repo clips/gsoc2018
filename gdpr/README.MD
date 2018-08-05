@@ -2,6 +2,8 @@
 This tool is built to aid companies/organizations in their text anonymization needs.
 ##### What is text anonymization?
 Text Anonymization refers to the processing of text, stripping it of any attributes/identifiers thus hiding sensitive details and protecting the identity of users.
+## Usage Guide:  [Click Here](https://github.com/clips/gsoc2018/tree/master/gdpr/USAGE_GUIDE)
+
 ## Architecture
 This system consists of two main components.
 
@@ -37,7 +39,3 @@ Example: `I live in Beijing` get's generalized to `I live in China` at level 1 g
  8. Install the magnitude package by doing: `SKIP_MAGNITUDE_WHEEL=1 pip3 install pymagnitude==0.1.46` (not there in the requirements because of the extra flag)
  9. In case you haven't already, go into the privacy directory by doing `cd privacy` and run the following commands : `python3 manage.py makemigrations` and `python3 manage.py migrate`. 
  10. Your application is now ready to use. Run `python3 manage.py runserver` to start it up and navigate in your console to [localhost:8000](localhost:8000) to view the webapp.
-
-## Usage Instructions:
-
-Kindly find the first draft of usage instructions/guide [here](https://docs.google.com/document/d/14TS92Wn4DlgDTaX1zBBElvC6YtSjuwKMdo7hRyv4Uvc/edit?usp=sharing)
