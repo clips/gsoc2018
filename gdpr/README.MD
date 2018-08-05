@@ -26,8 +26,10 @@ This method, while completely changing the word largely retains vector space inf
     * Part Holonym Based: In this option, the system parses the [Wordnet Lexical Database](https://wordnet.princeton.edu/) to extract part holonyms. This method works exceptionally well with geographical entities. In this, the user can choose the level of generalization. 
 Example: `I live in Beijing` get's generalized to `I live in China` at level 1 generalization and to `I live in Asia` at level 2 of generalization.
 
-## Instructions to setup
-
+## Installation / Setup
+#### By using a Setup Script
+You may directly use a setup script to complete all the steps. Currently tested with a Ubuntu 16.04, Python 3.6 setup. Not recommended because of the very large downloads which may fail. Find the setup script [here](https://github.com/clips/gsoc2018/blob/master/gdpr/setup.sh).  
+#### By following instructions (recommended) 
  1. Pull the code from github using `git clone https://github.com/clips/gsoc2018.git`
  2. Traverse into the GDPR directory using `cd gsoc2018/gdpr/`
  3. Install the requirments using `pip3 install -r requirements.txt`. 
