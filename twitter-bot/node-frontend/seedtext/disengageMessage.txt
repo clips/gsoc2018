@@ -1,0 +1,27 @@
+%import topic.txt as topic
+
+root:
+- Thanks for the {{ debate }}!
+- It was {{ nice }} talking to you.
+- I am glad that we could discuss {{ topic }} together {{ calmly }}.
+- I enjoyed our {{ debate }} about {{ topic }}. Thanks!
+- It was {{ nice }} discussing {{ topic }} with you, see you later!
+
+calmly:
+- calmly
+- in a civil way
+- without needless {{ bad_sentiment }}}
+
+debate:
+- debate
+- discussion
+
+nice: 
+- nice
+- pleasant
+- great
+- interesting
+
+bad_sentiment:
+- anger
+- hate

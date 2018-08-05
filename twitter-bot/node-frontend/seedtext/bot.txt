@@ -1,0 +1,32 @@
+%import topic.txt as topic
+%import seedtext/firstReply.txt as first_reply
+%import seedtext/unknownTopicResponse.txt as unkown_topic_response
+%import seedtext/disengageMessage.txt as disengage_message
+
+root:
+- ([firstReply === true]) {{ first_reply }}
+- ([unknownTopicResponse === true]) {{ unkown_topic_response }}
+- ([disengage === true]) {{ disengage_message }}
+- ([none === true]) {{ continued_discussion }}
+
+continued_discussion:
+- PLACEHOLDER1
+- PLACEHOLDER2
+- PLACEHOLDER3
+- PLACEHOLDER4
+- PLACEHOLDER5
+
+sentiment:
+- ([(anger > 0.5) && (anger < 0.6)]) upset
+- ([(anger > 0.5) && (anger < 0.6)]) bothered
+- ([(anger > 0.5) && (anger < 0.6)]) annoyed
+- ([(anger > 0.6) && (anger < 0.7)]) irritated
+- ([(anger > 0.6) && (anger < 0.7)]) disturbed
+- ([(anger > 0.7) && (anger < 0.8)]) vexed
+- ([(anger > 0.7) && (anger < 0.8)]) indignant
+- ([(anger > 0.8) && (anger < 0.9)]) exasperated
+- ([anger > 0.8]) enraged
+- ([anger > 0.9]) furious
+- ([anger > 0.9]) very angry
+- ([anger > 0.9]) outraged
+- angry
