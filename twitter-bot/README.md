@@ -22,4 +22,4 @@ Placeholder ML Backend description. Add Link to ReadMe in respective folder.
 Placeholder Twitter Bot description. Add Link to ReadMe in respective folder.
 
 ### Seed:
-Seed is a JavaScript application (also available as a Node.js module - [SeedText](https://www.npmjs.com/package/seedtext)) used for seeded pseudo-random procedural content generation. It uses its own microlanguage for guiding the generation and the whole documentation for this can be seen in [its GitHub repository](https://github.com/nodebox/seed "Seed GitHub Repo").
+Seed is a JavaScript application (also available as a Node.js module - [SeedText](https://www.npmjs.com/package/seedtext) used for seeded pseudo-random procedural content generation. It uses its own microlanguage for guiding the generation and the whole documentation for this can be seen in [its GitHub repository](https://github.com/nodebox/seed "Seed GitHub Repo").
