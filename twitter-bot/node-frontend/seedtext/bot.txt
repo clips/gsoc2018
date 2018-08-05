@@ -10,11 +10,80 @@ root:
 - ([none === true]) {{ continued_discussion }}
 
 continued_discussion:
-- PLACEHOLDER1
-- PLACEHOLDER2
-- PLACEHOLDER3
-- PLACEHOLDER4
-- PLACEHOLDER5
+- {{ acknowledgement }}, so {{ reassuring_observation }} {{ incites_emotion }} {{ sentiment }}? 
+- so {{ topic }} {{ incites_emotion }} {{ sentiment }}, {{ reassuring_question }}? 
+- {{ reassuring_observation }} {{ incites_emotion }} {{ sentiment }}? 
+- {{ acknowledgement }}, so {{ reassuring_observation }} {{ incites_emotion }} {{ sentiment }}? {{ request_information_standalone }}
+- so {{ topic }} {{ incites_emotion }} {{ sentiment }}, {{ reassuring_question }}? {{ request_information_standalone }}
+- {{ reassuring_observation }} {{ incites_emotion }} {{ sentiment }}? {{ request_information_standalone }}
+
+acknowledgement:
+- I understand
+- I see
+
+reassuring_observation:
+- you are saying that {{ topic }}
+- you mean that {{ topic }}
+
+reassuring_question:
+- is that correct?
+- am I understanding that correctly?
+
+request_information_all:
+- {{ request_information_standalone }}
+- {{ request_information_end }}
+
+request_information_standalone:
+- I would like to hear more {{ topic_reference }}
+- I would be really interested in hearing your thoughts {{ topic_reference }}
+- I was wondering whether you would like to tell me more {{ topic_reference }}
+
+request_information_end:
+- could you tell me more {{ topic_reference }}?
+- could you go into more detail {{ topic_reference }}?
+
+topic_reference:
+- about {{ ambiguous_topic_reference }}
+- regarding {{ ambiguous_topic_reference }}
+- on {{ ambiguous_topic_reference }}
+
+ambiguous_topic_reference:
+- this
+- that
+- the {{ topic_synonyms }}
+- this {{ topic_synonyms }}
+- that {{ topic_synonyms }}
+
+topic_synonyms:
+- topic
+- subject
+
+to_state:
+- are you {{ state_gerund }}
+- you {{ state }}
+
+state_gerund:
+- saying
+- proposing
+- suggesting
+
+state:
+- mean
+- want to say
+- propose
+- suggest
+
+incites_emotion:
+- makes you feel
+- makes you
+
+reassuring_observation:
+- you are saying that {{ topic }}
+- you mean that {{ topic }}
+
+reassuring_question:
+- is that correct?
+- am I understanding that correctly?
 
 sentiment:
 - ([(anger > 0.5) && (anger < 0.6)]) upset

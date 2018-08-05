@@ -53,7 +53,7 @@ That's it! The bot is now up an running. Unless you modified the source code, th
 ### Remote Deployment:
 Instructions for remote deployment of the bot (for example on Heroku) will be added soon. The deployment should be quite standard but needs adjusting (point to remotely stored models rather than those on disk, changing paths here and there, adjusting Procfiles and so on). If you have done this kind of thing before it should be quite straightforward and you don't have to wait for this part of tutorial to be completed.
 
-###**Customizing the Bot:**
+### Customizing the Bot:
 
 It is very likely that you'll want to customize the output of the bot or the way it responds or any of the other things there are to be customized. For this, please, look into respective subdirectories depending on what part of the bot you want to customize, as that is where the information you need is provided. If you want to adjust something with Machine Learning backend and analysis of tweets, go to the [*python-backend*](https://github.com/clips/gsoc2018/tree/master/twitter-bot/python-backend) subdirectory. If you want to change how the responses are generated or how the bot acts or what it reacts to, go to the [*node-frontend*](https://github.com/clips/gsoc2018/tree/master/twitter-bot/node-frontend) subdirectory.
 
