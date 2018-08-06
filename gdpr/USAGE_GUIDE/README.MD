@@ -34,7 +34,7 @@ _Choosing the kind of anonymization_
 
   2.1) Deletion:
 
-To be used in certain cases where retaining a part of the attribute through the other anonymization methods too is not appropriate. Completely replaces the attribute with a pre-set replacement. Example: My name is John Doe would be replaced by My name is \&lt;Name\&gt;.
+To be used in certain cases where retaining a part of the attribute through the other anonymization methods too is not appropriate. Completely replaces the attribute with a pre-set replacement. Example: My name is John Doe would be replaced by My name is <NAME>.
 
 ![](screenshots/deletion_config.png)
 _Choosing replacement string for deletion_
