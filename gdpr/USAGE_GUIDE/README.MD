@@ -121,6 +121,10 @@ To directly make a POST request, the url is /anonymize\_text\_api/ and in the Bo
 
 In case, you wish to get token level details, make the request to: /token\_level\_api/
 
+With the token level api, in order to also use the TF-IDF system, set the parameter in body as:
+
+`{"tfidf_anonymize" : True}`
+
 ![](screenshots/token_level_api.png)
 _Token level API response_
 
