@@ -59,6 +59,7 @@ urlpatterns = [
         views.delete_attribute),
     url(r'^delete_alias/(\d+)/$',
         views.delete_alias),
-
+    url(r'^delete_regex/(\d+)/$',
+        views.delete_regex),
 
 ]

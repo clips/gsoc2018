@@ -944,3 +944,19 @@ def delete_alias(request, id):
             return HttpResponseRedirect('/logout')
     else:
         return HttpResponseRedirect('/login')
+
+
+def delete_regex(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        regexes = Regex_Pattern.objects.filter(user=user, id=id)
+        if len(regexes) > 0:
+            if request.method == 'POST':
+                regexes[0].delete()
+                return HttpResponseRedirect('/')
+            regex = regexes[0]
+            return render(request, 'delete_regex.html', {'regex': regex})
+        else:
+            return HttpResponseRedirect('/logout')
+    else:
+        return HttpResponseRedirect('/login')
