@@ -87,6 +87,7 @@ _Adding a regex pattern for email_
 _3)_ Detecting Attributes using TF-IDF: The third method in which the system detects attributes/tokens that have to be anonymized is by using TF-IDF. The system assigns TF-IDF scores to tokens in order to determine their importance. Tokens above a certain limit will directly be deleted. Since TF-IDF helps us determine only whether or not an attribute is sensitive but not what kind of an attribute is something, the system currently only support deletion of the same. Adding documents to the TF-IDF knowledge base is covered later in this guide.
 
 ## Anonymization
+**IMPORTANT NOTE:**  The TF-IDF based anonymization will not work properly until significant number of documents are added to the knowledgebase. For this reason, the user has the option to choose to not use it during anonymization. 
 
 This system offers multiple options for text to be anonymized.
 
@@ -94,7 +95,7 @@ This system offers multiple options for text to be anonymized.
 
 1. By entering Text:
 
-The user can directly enter the text he wishes to be anonymized in a box
+The user can directly enter the text he wishes to be anonymized in a box. The user may also choose whether he/she wants to use TF-IDF based anonymization. 
 
 
 ![](screenshots/anonymize.png)
@@ -102,7 +103,7 @@ _Anonymizing text entered_
 
 2) By uploading a file:
 
-In case the user wishes to anonymize text in an uploaded file, the user can do that too. The uploaded file will NOT be saved on the server.
+In case the user wishes to anonymize text in an uploaded file, the user can do that too. The uploaded file will NOT be saved on the server. The user may also choose whether he/she wants to use TF-IDF based anonymization. 
 
 ![](screenshots/anonymize_file_gui.png)
 _Uploading a file to be anonymized_
@@ -115,15 +116,13 @@ Authentication via API: While making any request via the API, the authentication
 
 1) By directly making a POST request with the plaintext in the body.
 
-To directly make a POST request, the url is /anonymize\_text\_api/ and in the Body, set
+To directly make a POST request, the url is /token\_level\_api/ and in the Body, set
 
     {"text_to_anonymize" : "<Insert_Text_Here>"}
 
-In case, you wish to get token level details, make the request to: /token\_level\_api/
-
 With the token level api, in order to also use the TF-IDF system, set the parameter in body as:
 
-`{"tfidf_anonymize" : True}`
+    {"tfidf_anonymize" : True}
 
 ![](screenshots/token_level_api.png)
 _Token level API response_
@@ -135,6 +134,10 @@ _Token level API response_
 To make a POST request by uploading a file, the url is /anonymize\_uploaded\_file\_api/ and in the body, set
 
     {"file_to_anonymize" : <attach file here>}
+
+With the token level api, in order to also use the TF-IDF system, set the parameter in body as:
+
+    {"tfidf_anonymize" : True}
 
 The response is by default at the token level.
 
