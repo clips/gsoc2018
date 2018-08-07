@@ -451,9 +451,23 @@ def anonymize(request):
         user = request.user
         if request.method == 'POST':
             text_to_anonymize = request.POST.get('text_to_anonymize')
+            '''
             anonymized_text = regex_based_anonymization(
                 user, text_to_anonymize)
             anonymized_text = entity_recognition_spacy(anonymized_text, user)
+            '''
+            response_dict = token_level_anon(text_to_anonymize, user)
+            response_dict = token_level_regex_anonymization(
+                response_dict, user)
+            response_dict = token_level_tf_idf_anonymize(response_dict, user)
+            response = response_dict['response']
+            anonymized_text = ' '
+            for entry in response:
+                if len(entry['replacement']) > 1:
+                    anonymized_text = anonymized_text + ' ' + entry['replacement']
+                else:
+                    anonymized_text = anonymized_text + ' ' + entry['token']
+
             return render(request, 'anonymize.html', {'anonymized_text': anonymized_text, 'show_output': True, 'text_to_anonymize': text_to_anonymize})
         else:
             return render(request, 'anonymize.html')
@@ -772,7 +786,7 @@ def token_level_tf_idf_anonymize(response_dict, user):
     try:
         tf_idf_configuration = TF_IDF_configuration.objects.get(user=user)
         replacement = tf_idf_configuration.replacement
-        threshold = tf_idf_configuration.threshold
+        threshold = tf_idf_configuration.threshhold
     except TF_IDF_configuration.DoesNotExist:
         # In case the configuration does not exist, revert to default values
         replacement = 'REDACTED'
@@ -784,12 +798,16 @@ def token_level_tf_idf_anonymize(response_dict, user):
                 if tf_idf_scores[entry['token'].lower()] > threshold:
                     response_dict['response'][index][
                         'replacement'] = replacement
+                    response_dict['response'][index][
+                        'is_replaced'] = True
             except KeyError:
                 # When the token is non existant in TF_IDF, assumed to be rare
-                if entry['token'] not in stop_words:
-                    # except when token is a stop_word
+                if entry['token'] not in stop_words and len(entry['token'])>1:
+                    # except when token is a stop_word or a punctuation
                     response_dict['response'][index][
                         'replacement'] = replacement
+                    response_dict['response'][index][
+                        'is_replaced'] = True
     return response_dict
 
 
