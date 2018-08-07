@@ -439,7 +439,8 @@ def regex_based_anonymization(user, text):
                     replacement_text = give_supressed_attribute(
                         match, attribute_configuration)
                 else:
-                    replacement_text = match
+                    replacement_text = give_generalized_attribute(
+                        attribute_configuration, user, match)
                 new_text = new_text.replace(match, replacement_text)
     return new_text
 
@@ -665,6 +666,38 @@ def token_level_anon(text_to_anonymize, user):
     return response
 
 
+def token_level_regex_anonymization(response_dict, user):
+    ''' Function takes the response dict and applies Regex based anon'''
+    patterns = Regex_Pattern.objects.filter(user=user)
+    response = response_dict['response']
+    if len(patterns) > 0:
+        for index, entry in enumerate(response):
+            # Checking if the token has been assigned a replacement
+            if not entry['is_replaced']:
+                for pattern in patterns:
+                    if re.match(pattern.regular_expression, entry['token']):
+                        token = entry['token']
+                        attribute_configuration = pattern.attribute
+                        if attribute_configuration.attribute_action == 'del':
+                            deletion_configuration = Deletion_Configuration.objects.get(
+                                attribute=attribute_configuration)
+                            replacement_text = deletion_configuration.replacement_name
+                        elif attribute_configuration.attribute_action == 'supp':
+                            replacement_text = give_supressed_attribute(
+                                token, attribute_configuration)
+                        else:
+                            replacement_text = give_generalized_attribute(
+                                attribute_configuration, user, token)
+
+                        response_dict['response'][index][
+                            'replacement'] = replacement_text
+                        response_dict['response'][index]['is_replaced'] = True
+
+        return response_dict
+    else:
+        return response_dict
+
+
 @api_view(['POST'])
 def token_level_api(request):
     ''' Wrapper for token level API '''
@@ -687,6 +720,7 @@ def token_level_api(request):
             if request.POST.get('tfidf_anonymize') == 'True' or request.POST.get('tfidf_anonymize') == 'true':
                 # Passing to TF-IDF BASED RARE TOKEN DETECTION
                 response = token_level_tf_idf_anonymize(response, user)
+        response = token_level_regex_anonymization(response, user)
         return JsonResponse(response)
 
 
