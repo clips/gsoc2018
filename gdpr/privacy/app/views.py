@@ -451,15 +451,11 @@ def anonymize(request):
         user = request.user
         if request.method == 'POST':
             text_to_anonymize = request.POST.get('text_to_anonymize')
-            '''
-            anonymized_text = regex_based_anonymization(
-                user, text_to_anonymize)
-            anonymized_text = entity_recognition_spacy(anonymized_text, user)
-            '''
             response_dict = token_level_anon(text_to_anonymize, user)
             response_dict = token_level_regex_anonymization(
                 response_dict, user)
-            response_dict = token_level_tf_idf_anonymize(response_dict, user)
+            if request.POST.get('tfidf_anonymize'):
+                response_dict = token_level_tf_idf_anonymize(response_dict, user)
             response = response_dict['response']
             anonymized_text = ' '
             for entry in response:
