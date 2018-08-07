@@ -110,5 +110,5 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class TF_IDF_configuration(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    threshhold = models.IntegerField()
+    threshhold = models.FloatField()
     replacement = models.CharField(max_length=20)

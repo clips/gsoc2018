@@ -960,3 +960,24 @@ def delete_regex(request, id):
             return HttpResponseRedirect('/logout')
     else:
         return HttpResponseRedirect('/login')
+
+
+def configure_tf_idf(request):
+    if request.user.is_authenticated:
+        user = request.user
+        try:
+            tf_idf_config = TF_IDF_configuration.objects.get(user=user)
+        except TF_IDF_configuration.DoesNotExist:
+            tf_idf_config = TF_IDF_configuration.objects.create(
+                user=user, threshhold=0.8, replacement="<REDACTED>")
+            tf_idf_config.save()
+        if request.method == 'POST':
+            threshhold = request.POST.get('threshhold')
+            replacement = request.POST.get('replacement')
+            tf_idf_config.threshhold = threshhold
+            tf_idf_config.replacement = replacement
+            tf_idf_config.save()
+            return HttpResponseRedirect('/')
+        return render(request, 'configure_tf_idf.html', {'tf_idf_config': tf_idf_config})
+    else:
+        return HttpResponseRedirect('/login')

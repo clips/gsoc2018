@@ -61,5 +61,6 @@ urlpatterns = [
         views.delete_alias),
     url(r'^delete_regex/(\d+)/$',
         views.delete_regex),
-
+    url(r'^configure_tf_idf/$',
+        views.configure_tf_idf),
 ]
