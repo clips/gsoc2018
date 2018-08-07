@@ -872,6 +872,7 @@ def anonymize_uploaded_file_api(request):
         )]
         file_text = ' '.join(file_text_lines)
         response = token_level_anon(file_text, user)
+        response = token_level_regex_anonymization(response_dict, user)
         # If the user has set the flag for TF-IDF anonymization, only then will
         # it take place
         if 'tfidf_anonymize' in request.POST:
@@ -906,7 +907,7 @@ def anonymize_uploaded_file_gui(request):
                     anonymized_text = anonymized_text + ' ' + entry['replacement']
                 else:
                     anonymized_text = anonymized_text + ' ' + entry['token']
-    
+
             return render(request, 'anonymize_uploaded_file_gui.html', {'success': True, 'anonymized_text': anonymized_text})
         else:
             return render(request, 'anonymize_uploaded_file_gui.html')
