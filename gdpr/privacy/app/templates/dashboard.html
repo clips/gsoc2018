@@ -53,6 +53,7 @@
         <th>Modify Action</th>
         <th>Add Alias</th>
         <th>Add Regex</th>
+        <th> Delete Attribute </th>
       </tr>
     </thead>
     <tbody>
@@ -67,6 +68,9 @@
         <button type="button" class="btn btn-success" onclick="location.href='/add_alias/{{attribute.id}}/'">Add Alias </button> </td>
         <td>
         <button type="button" class="btn btn-success" onclick="location.href='/add_regex_pattern/{{attribute.id}}/'">Add pattern </button> 
+        </td>
+        <td>
+        <button type="button" class="btn btn-primary" onclick="location.href='/delete_attribute/{{attribute.id}}/'">Delete </button> 
         </td>
       </tr>
       {% endfor %}

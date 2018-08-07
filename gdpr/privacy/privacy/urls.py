@@ -55,6 +55,8 @@ urlpatterns = [
         views.anonymize_uploaded_file_gui),
     url(r'^reset_setup_application/$',
         views.reset_setup_application),
+    url(r'^delete_attribute/(\d+)/$',
+        views.delete_attribute),
 
 
 ]

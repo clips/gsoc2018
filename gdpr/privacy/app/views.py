@@ -912,3 +912,19 @@ def reset_setup_application(request):
 
     else:
         return HttpResponseRedirect('/login')
+
+
+def delete_attribute(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        attributes = Attribute_Configuration.objects.filter(user=user, id=id)
+        if len(attributes) > 0:
+            if request.method == 'POST':
+                attributes[0].delete()
+                return HttpResponseRedirect('/')
+            attribute = attributes[0]
+            return render(request, 'delete_attribute.html', {'attribute': attribute})
+        else:
+            return HttpResponseRedirect('/logout')
+    else:
+        return HttpResponseRedirect('/login')
