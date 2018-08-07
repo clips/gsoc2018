@@ -893,10 +893,20 @@ def anonymize_uploaded_file_gui(request):
             file_text_lines = [line.decode('utf8').strip()
                                for line in myfile.readlines(
             )]
-            file_text = ' '.join(file_text_lines)
-            anonymized_text = regex_based_anonymization(
-                user, file_text)
-            anonymized_text = entity_recognition_spacy(anonymized_text, user)
+            text_to_anonymize = ' '.join(file_text_lines)
+            response_dict = token_level_anon(text_to_anonymize, user)
+            response_dict = token_level_regex_anonymization(
+                response_dict, user)
+            if request.POST.get('tfidf_anonymize'):
+                response_dict = token_level_tf_idf_anonymize(response_dict, user)
+            response = response_dict['response']
+            anonymized_text = ' '
+            for entry in response:
+                if len(entry['replacement']) > 1:
+                    anonymized_text = anonymized_text + ' ' + entry['replacement']
+                else:
+                    anonymized_text = anonymized_text + ' ' + entry['token']
+    
             return render(request, 'anonymize_uploaded_file_gui.html', {'success': True, 'anonymized_text': anonymized_text})
         else:
             return render(request, 'anonymize_uploaded_file_gui.html')
