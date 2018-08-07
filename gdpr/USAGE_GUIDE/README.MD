@@ -87,7 +87,7 @@ _Adding a regex pattern for email_
 _3)_ Detecting Attributes using TF-IDF: The third method in which the system detects attributes/tokens that have to be anonymized is by using TF-IDF. The system assigns TF-IDF scores to tokens in order to determine their importance. Tokens above a certain limit will directly be deleted. Since TF-IDF helps us determine only whether or not an attribute is sensitive but not what kind of an attribute is something, the system currently only support deletion of the same. Adding documents to the TF-IDF knowledge base is covered later in this guide.
 
 ## Anonymization
-**IMPORTANT NOTE:**  The TF-IDF based anonymization will not work properly until significant number of documents are added to the knowledgebase. For this reason, the user has the option to choose to not use it during anonymization. 
+**IMPORTANT NOTE:  The TF-IDF based anonymization will not work properly until significant number of documents are added to the knowledgebase. For this reason, the user has the option to choose to not use it during anonymization. **
 
 This system offers multiple options for text to be anonymized.
 
