@@ -928,3 +928,19 @@ def delete_attribute(request, id):
             return HttpResponseRedirect('/logout')
     else:
         return HttpResponseRedirect('/login')
+
+
+def delete_alias(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+        aliases = Attribute_Alias.objects.filter(user=user, id=id)
+        if len(aliases) > 0:
+            if request.method == 'POST':
+                aliases[0].delete()
+                return HttpResponseRedirect('/')
+            alias = aliases[0]
+            return render(request, 'delete_alias.html', {'alias': alias})
+        else:
+            return HttpResponseRedirect('/logout')
+    else:
+        return HttpResponseRedirect('/login')

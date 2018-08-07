@@ -57,6 +57,8 @@ urlpatterns = [
         views.reset_setup_application),
     url(r'^delete_attribute/(\d+)/$',
         views.delete_attribute),
+    url(r'^delete_alias/(\d+)/$',
+        views.delete_alias),
 
 
 ]

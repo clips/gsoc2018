@@ -95,6 +95,7 @@
       <tr>
         <th>Alias for the NER model</th>
         <th>Attribute Name</th>
+        <th> Delete Alias</th>
       </tr>
     </thead>
     <tbody>
@@ -102,6 +103,9 @@
       <tr>
         <td>{{ alias.alias }}</td>
         <td>{{ alias.attribute.attribute_title }}</td>
+        <td>
+        <button type="button" class="btn btn-primary" onclick="location.href='/delete_alias/{{alias.id}}/'">Delete </button>
+        </td> 
       </tr>
       {% endfor %}
     </tbody>
