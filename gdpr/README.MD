@@ -3,6 +3,7 @@ This tool is built to aid companies/organizations in their text anonymization ne
 ##### What is text anonymization?
 Text Anonymization refers to the processing of text, stripping it of any attributes/identifiers thus hiding sensitive details and protecting the identity of users.
 ## Usage Guide:  [Click Here](https://github.com/clips/gsoc2018/tree/master/gdpr/USAGE_GUIDE)
+## Live Demo: [Click Here](https://gdpr.textgain.com)
 
 ## Architecture
 This system consists of two main components.
