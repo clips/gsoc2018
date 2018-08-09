@@ -41,4 +41,4 @@ You may directly use a setup script to complete all the steps. Currently tested 
  8. Install the magnitude package by doing: `SKIP_MAGNITUDE_WHEEL=1 pip3 install pymagnitude==0.1.46` (not there in the requirements because of the extra flag)
  9. In case you haven't already, go into the privacy directory by doing `cd privacy` and run the following commands : `python3 manage.py makemigrations` and `python3 manage.py migrate`. 
  10. Your application is now ready to use. Run `python3 manage.py runserver` to start it up and navigate in your console to [localhost:8000](localhost:8000) to view the webapp.
-11. If you are deploying the app on a server that needs to be reached externally, add your hostnames in `ALLOWED_HOSTS =` in the filee privacy/settings.py and run `python3 manage.py runserver 0.0.0.0:8000` (or whatever port you want to run it on).
+11. If you are deploying the app on a server that needs to be reached externally, add your host name in `ALLOWED_HOSTS =` in the file `privacy/settings.py` and run `python3 manage.py runserver 0.0.0.0:8000` (or whatever port you want to run it on).
