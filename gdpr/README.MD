@@ -1,5 +1,5 @@
-# GDPR Anonymization Tool (GSOC2019)
-This tool is built to aid companies/organizations in their text anonymization needs and was developed in the context of CLiPS' [**Google Summer of Code 2019**](http://www.newsaudit.net)
+# GDPR Anonymization Tool (GSOC2018)
+This tool is built to aid companies/organizations in their text anonymization needs and was developed in the context of CLiPS' [**Google Summer of Code 2018**](http://www.newsaudit.net)
 
 ##### What is text anonymization?
 Text Anonymization refers to the processing of text, stripping it of any attributes/identifiers thus hiding sensitive details and protecting the identity of users.
