@@ -48,5 +48,5 @@ You may directly use a setup script to complete all the steps. Currently tested 
  1. An admin-panel is available at [localhost:8000/admin](localhost:8000/admin) after adding a superuser `python3 manage.py createsuperuser`
  2. If you are deploying the app on a server that needs to be reached externally, add your host name in `ALLOWED_HOSTS =` in the file `privacy/settings.py` and run `python3 manage.py runserver 0.0.0.0:8000` (or whatever port you want to run it on).
  3. To enable WordVector based generalization, you need to perform some additional steps:
-   * Download the GloVe magnitude file `wget http://magnitude.plasticity.ai/glove+approx/glove.6B.100d.magnitude`
-   * Make sure the path in `views.py` points to the file's location
+    * Download the GloVe magnitude file `wget http://magnitude.plasticity.ai/glove+approx/glove.6B.100d.magnitude`
+    * Make sure the path in `views.py` points to the file's location
