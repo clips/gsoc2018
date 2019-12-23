@@ -2,7 +2,7 @@ annoy==1.12.0
 cymem==1.31.2
 cytoolz==0.8.2
 dill==0.2.7.1
-Django==1.11.13
+Django==1.11.23
 djangorestframework==3.8.2
 fasteners==0.14.1
 lz4==2.0.0
