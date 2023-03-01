@@ -3,7 +3,7 @@ cymem==1.31.2
 cytoolz==0.8.2
 dill==0.2.7.1
 Django==2.2.24
-djangorestframework==3.8.2
+djangorestframework==3.11.2
 fasteners==0.14.1
 lz4==2.0.0
 monotonic==1.5
