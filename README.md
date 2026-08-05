@@ -1,3 +1,5 @@
+# WARNING: This GitHub is no longer being actively maintained. Use this code at your own risk!
+
 # Google Summer of Code 2018
 Kindly refer to [this](https://summerofcode.withgoogle.com/organizations/4798950528253952/) page for all the projects being undertaken by CLiPS in GSoC 2018.
 ## Multi Pronged Approach to Text Anonymization
